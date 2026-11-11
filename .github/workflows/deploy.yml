@@ -1,4 +1,4 @@
-name: Deploy to Azure VM
+name: Deploy to VPS
 
 on:
   push:
@@ -29,6 +29,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           source: dist/
-          target: /var/www/portafolio
+          target: /srv/sites/portafolio
           strip_components: 1
           rm: true
