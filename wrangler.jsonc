@@ -1,0 +1,9 @@
+{
+  // Sitio estatico (Astro, output "static"): solo se sirven los archivos de dist/
+  // desde el borde de Cloudflare. Build: "npm run build". Deploy: "npx wrangler deploy".
+  "name": "portfolio-astro",
+  "compatibility_date": "2026-09-02",
+  "assets": {
+    "directory": "./dist"
+  }
+}
