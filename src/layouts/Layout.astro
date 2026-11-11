@@ -1,22 +1,213 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Mi portafolio con Astro</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+﻿---
+import '../styles/global.css';
+import '@fontsource/space-grotesk/index.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Cristobal Garcia Coss | Senior Backend Engineer',
+  description = 'Portafolio profesional de Cristobal Sebastian Garcia Coss - Senior Backend Developer especializado en .NET, Arquitectura Limpia y Sistemas Distribuidos.'
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="dark scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Crist&oacute;bal Sebasti&aacute;n Garc&iacute;a Coss" />
+    <meta name="keywords" content=".NET, C#, Backend Developer, Clean Architecture, Microservices, Software Architect" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+  </head>
+  <body class="relative min-h-screen">
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div class="absolute inset-0 grid-bg opacity-30"></div>
+      <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <path class="data-path" d="M -100 200 Q 400 150 1200 400" fill="none" stroke="url(#grad1)" stroke-width="1"></path>
+        <path class="data-path" d="M 1400 100 Q 800 600 -200 800" fill="none" stroke="url(#grad2)" stroke-width="1"></path>
+        <circle class="data-dot data-dot-1" r="3" fill="#10b981"></circle>
+        <circle class="data-dot data-dot-2" r="3" fill="#6366f1"></circle>
+        <defs>
+          <linearGradient id="grad1" x1="0%" x2="100%" y1="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#10b981;stop-opacity:0"></stop>
+            <stop offset="50%" style="stop-color:#10b981;stop-opacity:1"></stop>
+            <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"></stop>
+          </linearGradient>
+          <linearGradient id="grad2" x1="0%" x2="100%" y1="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#6366f1;stop-opacity:0"></stop>
+            <stop offset="50%" style="stop-color:#6366f1;stop-opacity:1"></stop>
+            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="relative z-10 flex min-h-screen flex-col">
+      <Header />
+      <main class="flex-1 max-w-7xl mx-auto w-full px-6 py-12 space-y-24">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script type="module">
+      import anime from 'animejs';
+
+      const runAnimations = () => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion) {
+          return;
+        }
+
+        const paths = document.querySelectorAll('.data-path');
+        if (paths.length) {
+          paths.forEach((path) => {
+            const offset = anime.setDashoffset(path);
+            path.setAttribute('stroke-dasharray', offset);
+            path.setAttribute('stroke-dashoffset', offset);
+          });
+
+          anime({
+            targets: paths,
+            strokeDashoffset: [anime.setDashoffset, 0],
+            easing: 'easeInOutSine',
+            duration: 2000,
+            delay: anime.stagger(200),
+            direction: 'alternate',
+            loop: true
+          });
+        }
+
+        const dot1 = document.querySelector('.data-dot-1');
+        if (paths.length >= 1 && dot1) {
+          const path1 = anime.path(paths[0]);
+          anime({
+            targets: dot1,
+            translateX: path1('x'),
+            translateY: path1('y'),
+            rotate: path1('angle'),
+            easing: 'linear',
+            duration: 6000,
+            loop: true
+          });
+        }
+
+        const dot2 = document.querySelector('.data-dot-2');
+        if (paths.length >= 2 && dot2) {
+          const path2 = anime.path(paths[1]);
+          anime({
+            targets: dot2,
+            translateX: path2('x'),
+            translateY: path2('y'),
+            rotate: path2('angle'),
+            easing: 'linear',
+            duration: 7200,
+            delay: 600,
+            loop: true
+          });
+        }
+
+        const heroTitles = document.querySelectorAll('.anime-hero-title');
+        const hasHero = heroTitles.length
+          || document.querySelector('.anime-hero-label')
+          || document.querySelector('.anime-hero-text')
+          || document.querySelector('.anime-hero-buttons')
+          || document.querySelector('.anime-hero-image');
+
+        if (hasHero) {
+          const heroTimeline = anime.timeline({
+            easing: 'easeOutCubic'
+          });
+
+          heroTimeline
+            .add({
+              targets: '.anime-hero-label',
+              translateY: [24, 0],
+              opacity: [0, 1],
+              duration: 600
+            })
+            .add({
+              targets: heroTitles,
+              translateY: [32, 0],
+              opacity: [0, 1],
+              delay: anime.stagger(100),
+              duration: 900
+            }, '-=300')
+            .add({
+              targets: '.anime-hero-text',
+              translateY: [16, 0],
+              opacity: [0, 1],
+              duration: 700
+            }, '-=500')
+            .add({
+              targets: '.anime-hero-buttons > *',
+              translateY: [12, 0],
+              opacity: [0, 1],
+              delay: anime.stagger(120),
+              duration: 600
+            }, '-=500')
+            .add({
+              targets: '.anime-hero-image',
+              scale: [0.98, 1],
+              opacity: [0, 1],
+              duration: 700
+            }, '-=600');
+        }
+
+        const bentoCards = document.querySelectorAll('.bento-card');
+        if (bentoCards.length && 'IntersectionObserver' in window) {
+          bentoCards.forEach((card) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(24px) scale(0.98)';
+          });
+
+          const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) {
+                return;
+              }
+
+              anime({
+                targets: entry.target,
+                keyframes: [
+                  { opacity: 0, translateY: 24, scale: 0.98 },
+                  { opacity: 1, translateY: 0, scale: 1 }
+                ],
+                duration: 900,
+                easing: 'easeOutCubic'
+              });
+
+              obs.unobserve(entry.target);
+            });
+          }, { threshold: 0.2 });
+
+          bentoCards.forEach((card) => observer.observe(card));
+        }
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runAnimations);
+      } else {
+        runAnimations();
+      }
+    </script>
+  </body>
+</html>

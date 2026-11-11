@@ -1,0 +1,50 @@
+﻿@import "tailwindcss";
+
+@theme {
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-300 antialiased font-display selection:bg-emerald-500/30;
+  }
+}
+
+section[id] {
+  scroll-margin-top: 6rem;
+}
+
+.bento-card {
+  @apply bg-slate-900/40 backdrop-blur-md border border-slate-800/50 relative overflow-hidden transition-all duration-500;
+}
+
+.bento-card:hover {
+  @apply border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.1)];
+}
+
+.glow-indigo:hover {
+  @apply border-indigo-500/40 shadow-[0_0_25px_rgba(99,102,241,0.15)];
+}
+
+.grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, #1e293b 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+.data-path {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  opacity: 0.15;
+}
+
+.data-dot {
+  opacity: 0.75;
+}
+
+.data-dot-1 {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
+}
+
+.data-dot-2 {
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}

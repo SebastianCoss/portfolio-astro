@@ -1,0 +1,48 @@
+﻿---
+import { ArrowRight, MapPin } from 'lucide-react';
+---
+
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+  <div class="lg:col-span-8 bento-card glow-indigo rounded-2xl p-8 md:p-12 flex flex-col justify-center">
+    <div class="hero-content space-y-8">
+      <div class="space-y-4">
+        <span class="block text-emerald-400 text-xs font-bold uppercase tracking-[0.3em] overflow-hidden">
+          <span class="inline-block anime-hero-label">Software Architect</span>
+        </span>
+        <h1 class="text-white text-5xl md:text-7xl font-bold leading-[0.9] tracking-tighter">
+          <span class="block overflow-hidden"><span class="inline-block anime-hero-title">Crist&oacute;bal</span></span>
+          <span class="block overflow-hidden"><span class="inline-block anime-hero-title">Sebasti&aacute;n</span></span>
+          <span class="block overflow-hidden text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-indigo-500">
+            <span class="inline-block anime-hero-title">Garc&iacute;a Coss</span>
+          </span>
+        </h1>
+      </div>
+      <p class="text-slate-400 text-lg md:text-xl max-w-xl leading-relaxed anime-hero-text">
+        Especialista en <span class="text-white font-medium">.NET 8</span>, Arquitectura Limpia y Sistemas Distribuidos de alto rendimiento.
+      </p>
+      <div class="flex flex-wrap gap-4 anime-hero-buttons">
+        <button class="px-8 py-4 bg-emerald-500 text-slate-950 font-bold rounded-xl flex items-center gap-2 hover:translate-y-[-2px] active:scale-95 transition-all" type="button">
+          Ver Proyectos <ArrowRight className="w-4 h-4" />
+        </button>
+        <button class="px-8 py-4 bg-slate-800/50 text-white font-bold rounded-xl border border-slate-700 hover:bg-slate-800 transition-all" type="button">
+          Descargar CV
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="lg:col-span-4 bento-card rounded-2xl group anime-hero-image">
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent z-10"></div>
+    <img
+      alt="Professional Setup"
+      class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
+      src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOVK_gHiqLFeeMCDtqTl6z9oUVu0t7iunYcFhkKWseeKQvRakZH14xZ9plPNfp615Tfkvgx_QMHi8q6jCJGBDY9eXriXL3FFW7P-pv5Bte5XQk35ymoVV8yx95B49-kY9tI3-eoU6JggLxuW1hMea2j5Z0mHCz56q923DtDDayZJ3cuapRKK_p9Uj18kFObelw30y9-k0ioiI1GGqQenj452vm24MereXqVcOeG_SJASQE5D0N2SFy0l9PJhwEDF5bp1IKEDB5rnc"
+    />
+    <div class="absolute bottom-8 left-8 z-20">
+      <div class="flex items-center gap-2 text-emerald-400 mb-1">
+        <MapPin className="w-4 h-4" />
+        <span class="text-[10px] font-bold uppercase tracking-widest">Ubicaci&oacute;n</span>
+      </div>
+      <p class="text-white font-bold text-lg">M&eacute;xico / Remoto</p>
+    </div>
+  </div>
+</section>

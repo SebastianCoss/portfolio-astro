@@ -1,0 +1,59 @@
+﻿---
+import { Terminal, Database, Boxes } from 'lucide-react';
+---
+
+<section class="space-y-10" id="experience">
+  <div class="flex items-end justify-between px-2 anime-reveal-header">
+    <div>
+      <span class="text-emerald-500 text-[10px] font-bold uppercase tracking-[0.4em]">[02] TRAYECTORIA</span>
+      <h2 class="text-white text-4xl font-bold mt-2">Experiencia Profesional</h2>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bento-card glow-indigo rounded-2xl p-8 flex flex-col justify-between group h-full anime-exp-card">
+      <div>
+        <div class="flex items-center justify-between mb-8">
+          <span class="text-[10px] text-slate-500 font-mono tracking-widest">2023 - ACTUAL</span>
+          <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center group-hover:border-emerald-500/50 transition-colors">
+            <Terminal className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+          </div>
+        </div>
+        <h3 class="text-white text-2xl font-bold mb-1">Ryndem</h3>
+        <p class="text-indigo-400 text-sm font-bold mb-4 uppercase tracking-wider">Senior Backend Developer</p>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Liderazgo t&eacute;cnico en motores ETL de ultra velocidad con .NET 8. Optimizaci&oacute;n de flujos de datos cr&iacute;ticos.
+        </p>
+      </div>
+    </div>
+    <div class="bento-card glow-indigo rounded-2xl p-8 flex flex-col justify-between group h-full anime-exp-card">
+      <div>
+        <div class="flex items-center justify-between mb-8">
+          <span class="text-[10px] text-slate-500 font-mono tracking-widest">2021 - 2023</span>
+          <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center group-hover:border-emerald-500/50 transition-colors">
+            <Database className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+          </div>
+        </div>
+        <h3 class="text-white text-2xl font-bold mb-1">Thor Solutions</h3>
+        <p class="text-indigo-400 text-sm font-bold mb-4 uppercase tracking-wider">Database Specialist</p>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Tuning de SQL Server y performance engineering para entornos de alta concurrencia y big data.
+        </p>
+      </div>
+    </div>
+    <div class="bento-card glow-indigo rounded-2xl p-8 flex flex-col justify-between group h-full anime-exp-card">
+      <div>
+        <div class="flex items-center justify-between mb-8">
+          <span class="text-[10px] text-slate-500 font-mono tracking-widest">2019 - 2021</span>
+          <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center group-hover:border-emerald-500/50 transition-colors">
+            <Boxes className="w-5 h-5 text-emerald-500 group-hover:scale-110 transition-transform" />
+          </div>
+        </div>
+        <h3 class="text-white text-2xl font-bold mb-1">Banregio</h3>
+        <p class="text-indigo-400 text-sm font-bold mb-4 uppercase tracking-wider">Microservices Architect</p>
+        <p class="text-slate-400 text-sm leading-relaxed">
+          Arquitecturas bancarias con Java Spring Boot. Migraci&oacute;n de legados a ecosistemas distribuidos.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
