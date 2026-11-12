@@ -1,51 +1,25 @@
 ﻿---
-import { stackGroups, education, extras } from '../data/cv';
-import Art from './Art.astro';
+import { stackGroups } from '../data/cv';
 const dots = ['bg-c-red', 'bg-c-mustard', 'bg-c-teal', 'bg-c-pink', 'bg-c-blue', 'bg-c-green'];
 ---
 
-<section id="stack" class="py-14">
-  <h2 class="text-3xl md:text-5xl mb-3 reveal">Con qué trabajo</h2>
-  <p class="text-cream/70 text-lg mb-10 max-w-2xl reveal">Mi día a día es C# y SQL Server. Lo demás lo uso cuando el proyecto lo pide.</p>
-
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+<section id="stack">
+  <h2 class="sec-title"><span class="bg-c-teal"></span>Habilidades</h2>
+  <div data-perch class="bg-panel rounded-xl divide-y divide-panel-2 reveal">
     {stackGroups.map((g, i) => (
-      <div data-perch class="bg-panel rounded-xl p-6 reveal">
-        <h3 class="text-lg flex items-center gap-3 mb-4">
-          <span class:list={['w-4 h-4 rounded-full shrink-0', dots[i % dots.length]]}></span>{g.title}
+      <div class="grid sm:grid-cols-[11rem_1fr] gap-x-6 gap-y-2 px-5 md:px-6 py-4">
+        <h3 class="text-[15px] flex items-center gap-2.5 self-start pt-0.5">
+          <span class:list={['w-3 h-3 rounded-full shrink-0', dots[i % dots.length]]}></span>{g.title}
         </h3>
-        <ul class="space-y-1.5 text-cream/75 text-[15.5px]">
-          {g.items.map((it) => <li>{it}</li>)}
-        </ul>
+        <p class="text-cream/75 text-[15px]">{g.items.join(' · ')}</p>
       </div>
     ))}
   </div>
-
-  <div class="mt-5 grid md:grid-cols-5 gap-5">
-    <article data-perch class="card md:col-span-3 reveal">
-      <div class="card-art h-32 bg-c-purple"><Art kind="stack" /></div>
-      <div class="p-6 md:p-7">
-        <h3 class="text-2xl mb-5">Estudios y certificados</h3>
-        <ul class="space-y-4">
-          {education.map((e) => (
-            <li>
-              <p class="font-bold">{e.title}</p>
-              <p class="text-cream/70 text-[15.5px]">{e.place}</p>
-              <p class="note mt-0.5">{e.period}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </article>
-    <article data-perch class="card md:col-span-2 reveal">
-      <div class="card-art h-32 bg-c-mustard"><Art kind="circles" /></div>
-      <div class="p-6 md:p-7">
-        <h3 class="text-2xl mb-5">Fuera del código</h3>
-        <ul class="space-y-3 text-cream/75 text-[15.5px]">
-          {extras.map((x) => <li>{x}</li>)}
-          <li>Uso agentes de IA para escribir, revisar y probar código, siempre con revisión humana.</li>
-        </ul>
-      </div>
-    </article>
+  <div data-perch class="mt-4 bg-c-purple rounded-xl p-5 md:p-6 reveal">
+    <h3 class="text-lg mb-2">Fuera del código</h3>
+    <ul class="space-y-1.5 text-[15px] text-cream/90 list-disc pl-5">
+      <li>Fui líder de AWS User Group Morelos y ponente en "EC2 vs. Lambda para Backend Devs".</li>
+      <li>Uso agentes de IA para escribir, revisar y probar código, siempre con revisión humana.</li>
+    </ul>
   </div>
 </section>

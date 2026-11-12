@@ -34,7 +34,15 @@
 
 section[id] { scroll-margin-top: 5.5rem; }
 
-.note { @apply font-mono text-[12px] uppercase tracking-wider text-dim; }
+/* Titulo de seccion del CV: cuadrito de color + texto, con linea hasta el borde */
+.sec-title {
+  @apply flex items-center gap-3 text-[1.35rem] mb-5;
+}
+.sec-title > span { @apply w-4 h-4 rounded-sm shrink-0; }
+.sec-title::after { content: ""; flex: 1; height: 2px; background: var(--color-panel-2); }
+.side-title { @apply font-mono text-[12px] uppercase tracking-wider text-dim mb-3 font-normal; }
+
+.note {@apply font-mono text-[12px] uppercase tracking-wider text-dim; }
 
 /* Tarjeta: panel de color arriba (ilustracion) y cuerpo oscuro abajo */
 .card {

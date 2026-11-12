@@ -11,19 +11,20 @@ const look = [
 ];
 ---
 
-<section id="proyectos" class="py-14">
-  <h2 class="text-3xl md:text-5xl mb-3 reveal">Cosas que he construido</h2>
-  <p class="text-cream/70 text-lg mb-10 max-w-2xl reveal">Unas son de clientes y otras son mías. Cada tarjeta dice en qué etapa va.</p>
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+<section id="proyectos">
+  <h2 class="sec-title"><span class="bg-c-mustard"></span>Proyectos</h2>
+  <div class="grid sm:grid-cols-2 gap-4">
     {projects.map((p, i) => (
       <article data-perch class="card reveal">
-        <div class:list={['card-art h-44', look[i % look.length].color]}>
+        <div class:list={['card-art h-24', look[i % look.length].color]}>
           <Art kind={look[i % look.length].art} />
         </div>
-        <div class="p-6 flex-1 flex flex-col">
-          <p class="note mb-2">{p.status}</p>
-          <h3 class="text-xl mb-2">{p.name}</h3>
-          <p class="text-cream/70 text-[15.5px] mb-5 flex-1">{p.text}</p>
+        <div class="p-5 flex-1 flex flex-col">
+          <div class="flex items-baseline justify-between gap-3 mb-1.5">
+            <h3 class="text-lg">{p.name}</h3>
+            <span class="note !text-[11px] whitespace-nowrap">{p.status}</span>
+          </div>
+          <p class="text-cream/70 text-[15px] mb-4 flex-1">{p.text}</p>
           <div class="flex flex-wrap gap-1.5">
             {p.tags.map((t) => <span class="tag">{t}</span>)}
           </div>

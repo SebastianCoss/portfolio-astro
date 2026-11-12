@@ -1,34 +1,29 @@
 ﻿---
-import { profile, stats } from '../data/cv';
+import { stats } from '../data/cv';
 const tiles = ['bg-c-red', 'bg-c-green', 'bg-c-blue', 'bg-c-purple'];
 ---
 
-<section id="top" class="pt-12 pb-16 md:pt-20 md:pb-24">
-  <p class="note mb-6">Temixco, Morelos · México</p>
-  <h1 data-perch class="text-[2.3rem] md:text-6xl max-w-4xl">
-    Soy Cristóbal. Hago el backend de sistemas que no se pueden caer.
-  </h1>
-  <div class="mt-8 space-y-4 text-lg md:text-xl text-cream/75 max-w-3xl">
+<section id="perfil">
+  <h2 class="sec-title"><span class="bg-c-red"></span>Perfil</h2>
+  <p class="text-2xl md:text-[1.9rem] font-bold leading-snug max-w-3xl">
+    Hago el backend de sistemas que no se pueden caer.
+  </p>
+  <div class="mt-4 space-y-3 text-cream/75 max-w-3xl">
     <p>
-      Desarrollador .NET con más de cinco años de oficio. Lo que más disfruto es agarrar un sistema viejo,
-      de esos que nadie quiere tocar, y convertirlo en una API que da gusto mantener.
+      Soy desarrollador .NET con más de cinco años de oficio. Lo que más disfruto es agarrar un sistema viejo,
+      de esos que nadie quiere tocar, y convertirlo en una API que da gusto mantener. Trabajo con .NET 10,
+      Clean Architecture y SQL Server, casi siempre con despliegue en Azure.
     </p>
     <p>
       Hoy soy líder técnico en <strong class="text-cream">Ryndem</strong>. Fuera de ahí construyo mis propios
-      productos y ayudé a levantar la comunidad de AWS en Morelos.
+      productos y fui líder de la comunidad AWS User Group Morelos.
     </p>
   </div>
-  <div class="mt-9 flex flex-wrap gap-3">
-    <a href="#proyectos" class="btn btn-solid">Ver proyectos</a>
-    <a href={profile.cvFile} download class="btn btn-line">Descargar CV</a>
-    <button type="button" data-open-chat class="btn btn-line">Pregúntale a mi CV</button>
-  </div>
-
-  <div class="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4">
+  <div class="mt-6 grid grid-cols-2 xl:grid-cols-4 gap-3">
     {stats.map((s, i) => (
-      <div data-perch class:list={['rounded-xl p-5 md:p-6 reveal', tiles[i]]}>
-        <p class="text-4xl md:text-5xl font-bold">{s.value}</p>
-        <p class="mt-2 text-[15px] leading-snug text-cream/90">{s.label}</p>
+      <div data-perch class:list={['rounded-xl p-4', tiles[i]]}>
+        <p class="text-3xl font-bold">{s.value}</p>
+        <p class="mt-1 text-[14px] leading-snug text-cream/90">{s.label}</p>
       </div>
     ))}
   </div>

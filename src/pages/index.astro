@@ -1,5 +1,6 @@
 ﻿---
 import Layout from '../layouts/Layout.astro';
+import Sidebar from '../components/Sidebar.astro';
 import Hero from '../components/Hero.astro';
 import Experience from '../components/Experience.astro';
 import Projects from '../components/Projects.astro';
@@ -7,8 +8,13 @@ import Stack from '../components/Stack.astro';
 ---
 
 <Layout>
-  <Hero />
-  <Experience />
-  <Projects />
-  <Stack />
+  <div id="top" class="grid lg:grid-cols-[19rem_1fr] gap-6 lg:gap-8 pt-6 md:pt-8">
+    <Sidebar />
+    <div class="space-y-12 min-w-0">
+      <Hero />
+      <Experience />
+      <Projects />
+      <Stack />
+    </div>
+  </div>
 </Layout>

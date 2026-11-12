@@ -1,0 +1,56 @@
+---
+// Ficha del CV: se queda fija a la izquierda en pantallas anchas.
+import { profile, education } from '../data/cv';
+import Art from './Art.astro';
+
+const contact = [
+  { label: 'Correo', text: profile.email, href: `mailto:${profile.email}` },
+  { label: 'LinkedIn', text: 'crisegarcoss', href: profile.linkedin },
+  { label: 'GitHub', text: 'SebastianCoss', href: profile.github },
+  { label: 'Empresa', text: 'sysfactory.net', href: profile.company },
+];
+---
+
+<aside class="lg:sticky lg:top-20 lg:self-start space-y-4">
+  <div data-perch class="card">
+    <div class="card-art h-28 bg-c-blue"><Art kind="nodes" /></div>
+    <div class="p-6">
+      <h1 class="text-[1.7rem]">Cristóbal Sebastián García Coss</h1>
+      <p class="mt-2 text-cream/80">Senior Software Engineer<br />Backend .NET · Líder técnico</p>
+      <p class="note mt-3">Temixco, Morelos · México<br />Home office / híbrido</p>
+
+      <div class="mt-5 grid gap-2">
+        <a href={profile.cvFile} download class="btn btn-solid justify-center">Descargar CV en PDF</a>
+        <button type="button" data-open-chat class="btn btn-line justify-center">Pregúntale a mi CV</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-panel rounded-xl p-6">
+    <h2 class="side-title">Contacto</h2>
+    <ul class="space-y-2.5">
+      {contact.map((c) => (
+        <li>
+          <p class="note !text-[11px]">{c.label}</p>
+          <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="font-medium break-all hover:underline underline-offset-4">{c.text}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="bg-panel rounded-xl p-6">
+    <h2 class="side-title">Formación</h2>
+    <ul class="space-y-3">
+      {education.map((e) => (
+        <li>
+          <p class="font-medium leading-snug">{e.title}</p>
+          <p class="text-cream/65 text-[14.5px] leading-snug">{e.place}</p>
+          <p class="note !text-[11px] mt-0.5">{e.period}</p>
+        </li>
+      ))}
+    </ul>
+    <h2 class="side-title mt-6">Idiomas</h2>
+    <p class="text-[15px]">Español <span class="text-cream/60">nativo</span></p>
+    <p class="text-[15px]">Inglés <span class="text-cream/60">B1, preparando B2</span></p>
+  </div>
+</aside>

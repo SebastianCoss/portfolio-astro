@@ -214,12 +214,13 @@
     }, { passive: true });
     addEventListener('mousedown', () => { if (Math.hypot(mx - x, my - (y - 36)) < 170) say('¡fsss!', 1100); });
 
-    const jumpTo = (p: Plat, tx: number) => {
-      const rise = Math.max(y - p.t, 0);
-      vy = -Math.sqrt(2 * G * (rise + 44));
-      const tAir = -vy / G + Math.sqrt((2 * 44) / G);            // subida + caida hasta el bloque
-      vx = Math.max(-10, Math.min(10, (tx - x) / tAir));
-      grounded = false; ground = null; jumpCool = 45;
+    // Salto balistico desde donde esta hasta (tx, ty); "extra" es cuanto sube por encima del punto mas alto.
+    const jumpTo = (tx: number, ty: number, extra = 48) => {
+      const apexY = Math.min(y, ty) - extra;
+      vy = -Math.sqrt(2 * G * (y - apexY));
+      const tAir = -vy / G + Math.sqrt((2 * (ty - apexY)) / G);
+      vx = Math.max(-13, Math.min(13, (tx - x) / tAir));
+      grounded = false; ground = null; jumpCool = 24;
       if (Math.abs(vx) > 0.2) face = vx > 0 ? 1 : -1;
     };
 
@@ -235,27 +236,28 @@
         else {
           y = here.t;
           if (jumpCool > 0) jumpCool--;
+          const active = idle < 5000;
+          // superficie que el cursor tiene debajo (bloque o piso): ahi quiere estar el gato
+          const under = platforms()
+            .filter((p) => mx > p.l - 10 && mx < p.r + 10 && p.t >= my - 24)
+            .sort((a, b) => a.t - b.t)[0];
           let tx = mx + (x < mx ? -96 : 96);                     // al lado del cursor, sin taparlo
-          let wantDown = false;
-          const dyCur = my - y;
+          let jumped = false;
 
-          if (dyCur < -90 && jumpCool === 0 && idle < 4000) {
-            // el cursor esta arriba: buscar un bloque alcanzable y saltar
-            const cand = platforms()
-              .filter((p) => p.el !== ground && p.t < y - 24 && y - p.t < 340 && p.r > x - 260 && p.l < x + 260)
-              .sort((a, b) => Math.abs(a.t - my) - Math.abs(b.t - my))[0];
-            if (cand) {
-              const under = Math.min(Math.max(x, cand.l + 30), cand.r - 30);
-              tx = under;
-              if (Math.abs(under - x) < 80) jumpTo(cand, Math.min(Math.max(mx, cand.l + 34), cand.r - 34));
-            }
-          } else if (dyCur > 120 && ground) {
-            wantDown = true;                                     // el cursor esta abajo: ir al borde y bajar
-            tx = mx < (here.l + here.r) / 2 ? here.l - 44 : here.r + 44;
+          if (active && jumpCool === 0 && under && under.el !== ground) {
+            // otro nivel (arriba o abajo): saltar hacia alla
+            const lx = Math.min(Math.max(mx, under.l + 34), under.r - 34);
+            const rise = y - under.t;
+            if (rise < 400 && Math.abs(lx - x) < 560) { jumpTo(lx, under.t, rise > 0 ? 46 : 72); jumped = true; }
+            else tx = lx;                                        // muy lejos: acercarse primero
+          }
+          if (!jumped && active && jumpCool === 0 && my < y - 110 && Math.abs(mx - x) < 170) {
+            // cursor arriba y sin bloque donde subirse: brinco para alcanzarlo
+            jumpTo(x + (mx - x) * 0.6, y, Math.min(y - my - 16, 250)); jumped = true;
           }
 
-          if (grounded) {
-            if (dist < 118 && idle < 3000 && !wantDown) {
+          if (!jumped) {
+            if (dist < 118 && idle < 3000) {
               mode = 'swat'; face = mx >= x ? 1 : -1;
               if (now - swatAt > 700) {
                 swatAt = now; scratchAt(mx, my);
@@ -266,12 +268,13 @@
               if (frame % 240 === 0) say('z z z', 2200);
             } else {
               const d = tx - x;
-              if (Math.abs(d) > 12) {
+              if (active && jumpCool === 0 && Math.abs(d) > 230) {
+                jumpTo(x + Math.sign(d) * Math.min(Math.abs(d), 270), y, 36);   // brinco largo al perseguir
+              } else if (Math.abs(d) > 12) {
                 const sp = curSpeed > 1.4 ? SPEED * 1.8 : SPEED;
                 x += Math.sign(d) * Math.min(Math.abs(d) * 0.09 + 0.5, sp); face = d > 0 ? 1 : -1; mode = 'walk';
+                x = Math.min(Math.max(x, here.l + 26), here.r - 26);
               } else { mode = 'sit'; face = mx >= x ? 1 : -1; }
-              if (!wantDown) x = Math.min(Math.max(x, here.l + 26), here.r - 26);
-              else if (x < here.l || x > here.r) { grounded = false; ground = null; vx = face * 1.6; vy = 0; }
             }
           }
         }

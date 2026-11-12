@@ -9,21 +9,24 @@ const look = [
 ];
 ---
 
-<section id="experiencia" class="py-14">
-  <h2 class="text-3xl md:text-5xl mb-3 reveal">Dónde he trabajado</h2>
-  <p class="text-cream/70 text-lg mb-10 max-w-2xl reveal">Cuatro etapas, de la más reciente a la primera.</p>
-  <div class="grid md:grid-cols-2 gap-5">
+<section id="experiencia">
+  <h2 class="sec-title"><span class="bg-c-blue"></span>Experiencia</h2>
+  <div class="space-y-4">
     {jobs.map((job, i) => (
-      <article data-perch class="card reveal">
-        <div class:list={['card-art h-40', look[i % look.length].color]}>
+      <article data-perch class="bg-panel rounded-xl overflow-hidden sm:flex reveal">
+        <div class:list={['card-art h-20 sm:h-auto sm:w-28 shrink-0', look[i % look.length].color]}>
           <Art kind={look[i % look.length].art} />
-          {job.current && <span class="absolute top-3 right-3 font-mono text-[11px] uppercase px-2 py-1 rounded bg-cream text-night">Ahora</span>}
         </div>
-        <div class="p-6 md:p-7 flex-1">
-          <p class="note mb-2">{job.period}</p>
-          <h3 class="text-2xl">{job.company}</h3>
-          <p class="text-cream/70 mb-5">{job.role}</p>
-          <ul class="space-y-3 text-[15.5px]">
+        <div class="p-5 md:p-6 flex-1">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-xl">{job.company}</h3>
+            <p class="note">
+              {job.period}
+              {job.current && <span class="ml-2 px-1.5 py-0.5 rounded bg-cream text-night">ahora</span>}
+            </p>
+          </div>
+          <p class="text-cream/70 mb-3">{job.role}</p>
+          <ul class="space-y-1.5 text-[15px] list-disc pl-5 marker:text-cream/40">
             {job.highlights.map((h) => (
               <li><strong>{h.title}.</strong> <span class="text-cream/70">{h.text}</span></li>
             ))}

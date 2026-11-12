@@ -1,35 +1,19 @@
 ﻿---
 import { profile } from '../data/cv';
-
-const links = [
-  { label: 'Correo', text: profile.email, href: `mailto:${profile.email}` },
-  { label: 'LinkedIn', text: 'crisegarcoss', href: profile.linkedin },
-  { label: 'GitHub', text: 'SebastianCoss', href: profile.github },
-  { label: 'Mi empresa', text: 'sysfactory.net', href: profile.company },
-];
 ---
 
-<footer id="contacto" class="max-w-6xl mx-auto px-5 md:px-8 pt-14 pb-10">
-  <div data-perch class="bg-c-red rounded-xl p-8 md:p-12 grid md:grid-cols-2 gap-10">
+<footer id="contacto" class="max-w-6xl mx-auto px-5 md:px-8 pt-10 pb-10">
+  <div data-perch class="bg-c-red rounded-xl p-7 md:p-9 flex flex-wrap items-center justify-between gap-6">
     <div>
-      <h2 class="text-4xl md:text-5xl">¿Tienes un sistema que mejorar?</h2>
-      <p class="mt-5 text-lg text-cream/90 max-w-md">
-        Cuéntame qué necesitas. Respondo yo, no un formulario. Y si prefieres, pregúntale primero a mi CV.
-      </p>
-      <button type="button" data-open-chat class="btn btn-solid mt-7">Pregúntale a mi CV</button>
+      <h2 class="text-2xl md:text-3xl">¿Tienes un sistema que mejorar?</h2>
+      <p class="mt-2 text-cream/90">Escríbeme y lo platicamos. Respondo yo, no un formulario.</p>
     </div>
-    <ul class="self-center divide-y-2 divide-cream/25">
-      {links.map((l) => (
-        <li>
-          <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="flex items-baseline justify-between gap-6 py-4 group">
-            <span class="font-mono text-[12px] uppercase tracking-wider text-cream/75">{l.label}</span>
-            <span class="font-bold text-right break-all group-hover:underline underline-offset-4">{l.text}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
+    <div class="flex flex-wrap gap-3">
+      <a href={`mailto:${profile.email}`} class="btn btn-solid">Escribirme</a>
+      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn-line">LinkedIn</a>
+    </div>
   </div>
-  <p class="mt-8 font-mono text-[12px] text-dim">
+  <p class="mt-6 font-mono text-[12px] text-dim">
     © 2026 Cristóbal Sebastián García Coss · Hecho en Morelos con Astro. El gato todavía no tiene nombre.
   </p>
 </footer>
