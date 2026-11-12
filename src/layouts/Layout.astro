@@ -1,4 +1,4 @@
-﻿---
+---
 import '../styles/global.css';
 import '@fontsource/ibm-plex-sans/400.css';
 import '@fontsource/ibm-plex-sans/500.css';
@@ -8,46 +8,60 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Cat from '../components/Cat.astro';
 import ChatWidget from '../components/ChatWidget.astro';
+import CodeBg from '../components/CodeBg.astro';
+import { content, type Lang } from '../data/cv';
 
-interface Props {
-  title?: string;
-  description?: string;
-}
-
-const {
-  title = 'Cristóbal García Coss · Desarrollador backend .NET',
-  description = 'Soy Cristóbal, desarrollador backend .NET y líder técnico en Morelos, México. Modernizo sistemas legacy hacia APIs y microservicios.',
-} = Astro.props;
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = content[lang];
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#0b1920" />
+    <link rel="alternate" hreflang="es" href="https://portafolio.sysfactory.net/" />
+    <link rel="alternate" hreflang="en" href="https://portafolio.sysfactory.net/en/" />
 
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{c.ui.title}</title>
+    <meta name="description" content={c.ui.description} />
     <meta name="author" content="Cristóbal Sebastián García Coss" />
-
     <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:locale" content="es_MX" />
+    <meta property="og:title" content={c.ui.title} />
+    <meta property="og:description" content={c.ui.description} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_MX' : 'en_US'} />
+
+    <!-- aplica el modo guardado antes de pintar, para que no parpadee -->
+    <script is:inline>
+      (function () { try { if (localStorage.getItem('theme') === 'day') document.documentElement.dataset.theme = 'day'; } catch (e) {} })();
+    </script>
   </head>
   <body class="min-h-screen">
-    <Header />
+    <CodeBg />
+    <Header lang={lang} />
     <main class="max-w-6xl mx-auto w-full px-5 md:px-8">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
     <Cat />
-    <ChatWidget />
+    <ChatWidget lang={lang} />
 
     <script>
+      // modo dia / noche: lo cambian el boton del encabezado y un clic al gato
+      const root = document.documentElement;
+      const toggleTheme = () => {
+        const next = root.dataset.theme === 'day' ? 'night' : 'day';
+        root.dataset.theme = next;
+        try { localStorage.setItem('theme', next); } catch { /* sin storage */ }
+        window.dispatchEvent(new Event('themechange'));
+      };
+      window.addEventListener('toggle-theme', toggleTheme);
+      document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+
+      // aparicion al hacer scroll
       const els = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries) => {

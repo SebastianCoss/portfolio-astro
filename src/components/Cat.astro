@@ -226,10 +226,13 @@
     addEventListener('mousedown', (e) => {
       const onCat = Math.abs(e.clientX - x) < 56 && e.clientY > y - 78 && e.clientY < y + 8;
       if (onCat && grounded) {
-        clicks++;
-        lastMoveAt = performance.now();
-        if (mode === 'sleep' || clicks % 3 === 0) { purrUntil = 0; say('¡miau!', 1000); jumpTo(x + face * 50, y, 130); }
-        else { purrUntil = performance.now() + 2000; say('prrr…', 1900); heartAt(x, y - 74); }
+        // clic al gato: cambia entre modo dia y modo noche, brinca y suelta corazones
+        lastMoveAt = performance.now(); purrUntil = 0;
+        window.dispatchEvent(new Event('toggle-theme'));
+        const day = document.documentElement.dataset.theme === 'day';
+        say(day ? '☀ ¡miau!' : '☾ miau…', 1500);
+        heartAt(x - 14, y - 74); heartAt(x + 14, y - 82);
+        jumpTo(x + face * 40, y, 120);
       } else if (Math.hypot(mx - x, my - (y - 36)) < 170) say('¡fsss!', 1100);
     });
 

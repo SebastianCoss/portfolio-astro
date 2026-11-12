@@ -1,19 +1,23 @@
-﻿---
-import { jobs } from '../data/cv';
+---
+import { content, type Lang } from '../data/cv';
 import Art from './Art.astro';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = content[lang];
 const look = [
   { color: 'bg-c-blue', art: 'exchange' },
   { color: 'bg-c-red', art: 'phone' },
   { color: 'bg-c-purple', art: 'pin' },
   { color: 'bg-c-green', art: 'bank' },
 ];
+const FIRST = 3; // logros visibles; el resto se abre con "Ver mas"
 ---
 
 <section id="experiencia">
-  <h2 class="sec-title"><span class="bg-c-blue"></span>Experiencia</h2>
+  <h2 class="sec-title"><span class="bg-c-blue"></span>{c.ui.secExperience}</h2>
   <div class="space-y-4">
-    {jobs.map((job, i) => (
-      <article data-perch class="bg-panel rounded-xl overflow-hidden sm:flex reveal">
+    {c.jobs.map((job, i) => (
+      <article data-perch class="block-panel art-host overflow-hidden sm:flex reveal">
         <div class:list={['card-art h-20 sm:h-auto sm:w-28 shrink-0', look[i % look.length].color]}>
           <Art kind={look[i % look.length].art} />
         </div>
@@ -22,15 +26,28 @@ const look = [
             <h3 class="text-xl">{job.company}</h3>
             <p class="note">
               {job.period}
-              {job.current && <span class="ml-2 px-1.5 py-0.5 rounded bg-cream text-night">ahora</span>}
+              {job.current && <span class="ml-2 px-1.5 py-0.5 rounded bg-cream text-night">{c.ui.now}</span>}
             </p>
           </div>
           <p class="text-cream/70 mb-3">{job.role}</p>
           <ul class="space-y-1.5 text-[15px] list-disc pl-5 marker:text-cream/40">
-            {job.highlights.map((h) => (
+            {job.highlights.slice(0, FIRST).map((h) => (
               <li><strong>{h.title}.</strong> <span class="text-cream/70">{h.text}</span></li>
             ))}
           </ul>
+          {job.highlights.length > FIRST && (
+            <details class="more">
+              <summary>
+                <span class="when-closed">{c.ui.more} (+{job.highlights.length - FIRST})</span>
+                <span class="when-open">{c.ui.less}</span>
+              </summary>
+              <ul class="space-y-1.5 text-[15px] list-disc pl-5 marker:text-cream/40 mt-3">
+                {job.highlights.slice(FIRST).map((h) => (
+                  <li><strong>{h.title}.</strong> <span class="text-cream/70">{h.text}</span></li>
+                ))}
+              </ul>
+            </details>
+          )}
         </div>
       </article>
     ))}

@@ -1,25 +1,29 @@
-﻿---
-import { stackGroups } from '../data/cv';
+---
+import { content, type Lang } from '../data/cv';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = content[lang];
 const dots = ['bg-c-red', 'bg-c-mustard', 'bg-c-teal', 'bg-c-pink', 'bg-c-blue', 'bg-c-green'];
 ---
 
 <section id="stack">
-  <h2 class="sec-title"><span class="bg-c-teal"></span>Habilidades</h2>
-  <div data-perch class="bg-panel rounded-xl divide-y divide-panel-2 reveal">
-    {stackGroups.map((g, i) => (
+  <h2 class="sec-title"><span class="bg-c-teal"></span>{c.ui.secSkills}</h2>
+  <div data-perch class="block-panel divide-y divide-panel-2 reveal">
+    {c.stackGroups.map((g, i) => (
       <div class="grid sm:grid-cols-[11rem_1fr] gap-x-6 gap-y-2 px-5 md:px-6 py-4">
-        <h3 class="text-[15px] flex items-center gap-2.5 self-start pt-0.5">
+        <h3 class="text-[15px] flex items-center gap-2.5 self-start pt-1.5">
           <span class:list={['w-3 h-3 rounded-full shrink-0', dots[i % dots.length]]}></span>{g.title}
         </h3>
-        <p class="text-cream/75 text-[15px]">{g.items.join(' · ')}</p>
+        <ul class="flex flex-wrap gap-1.5">
+          {g.items.map((it) => <li class="chip">{it}</li>)}
+        </ul>
       </div>
     ))}
   </div>
-  <div data-perch class="mt-4 bg-c-purple rounded-xl p-5 md:p-6 reveal">
-    <h3 class="text-lg mb-2">Fuera del código</h3>
+  <div data-perch class="on-color mt-4 bg-c-purple rounded-xl p-5 md:p-6 reveal">
+    <h3 class="text-lg mb-2">{c.ui.beyond}</h3>
     <ul class="space-y-1.5 text-[15px] text-cream/90 list-disc pl-5">
-      <li>Fui líder de AWS User Group Morelos y ponente en "EC2 vs. Lambda para Backend Devs".</li>
-      <li>Uso agentes de IA para escribir, revisar y probar código, siempre con revisión humana.</li>
+      {c.extras.map((x) => <li>{x}</li>)}
     </ul>
   </div>
 </section>

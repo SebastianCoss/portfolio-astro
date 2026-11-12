@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Sidebar from './Sidebar.astro';
+import Hero from './Hero.astro';
+import Experience from './Experience.astro';
+import Projects from './Projects.astro';
+import Stack from './Stack.astro';
+import type { Lang } from '../data/cv';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+---
+
+<Layout lang={lang}>
+  <div id="top" class="grid lg:grid-cols-[19rem_1fr] gap-6 lg:gap-8 pt-6 md:pt-8">
+    <Sidebar lang={lang} />
+    <div class="space-y-12 min-w-0">
+      <Hero lang={lang} />
+      <Experience lang={lang} />
+      <Projects lang={lang} />
+      <Stack lang={lang} />
+    </div>
+  </div>
+</Layout>

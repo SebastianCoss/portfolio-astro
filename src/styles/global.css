@@ -1,9 +1,10 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @theme {
   --font-sans: "IBM Plex Sans", Arial, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
+  /* modo noche (por defecto) */
   --color-night: #0b1920;
   --color-panel: #12252e;
   --color-panel-2: #1a323d;
@@ -20,15 +21,28 @@
   --color-c-orange: #d97435;
 }
 
+/* modo dia: se invierten fondo y tinta; los colores de las tarjetas no cambian */
+html[data-theme="day"] {
+  --color-night: #f1ecd6;
+  --color-panel: #fcf9ea;
+  --color-panel-2: #e3ddc3;
+  --color-cream: #0e1c24;
+  --color-dim: #5a655e;
+}
+/* sobre un bloque de color la tinta siempre es crema, en los dos modos */
+.on-color {
+  --color-cream: #f4f1d2;
+  --color-night: #0b1920;
+  color: var(--color-cream);
+}
+
 @layer base {
   html { scroll-behavior: smooth; }
   body {
     @apply bg-night text-cream font-sans antialiased;
     font-size: 17px;
     line-height: 1.55;
-    /* trama de puntos muy tenue, para que el fondo no se sienta vacio */
-    background-image: radial-gradient(rgba(244,241,210,.07) 1px, transparent 1.5px);
-    background-size: 26px 26px;
+    transition: background-color .35s ease, color .35s ease;
   }
   ::selection { background: var(--color-cream); color: var(--color-night); }
   h1, h2, h3 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }
@@ -38,25 +52,40 @@
 section[id] { scroll-margin-top: 5.5rem; }
 
 /* Titulo de seccion del CV: cuadrito de color + texto, con linea hasta el borde */
-.sec-title {
-  @apply flex items-center gap-3 text-[1.35rem] mb-5;
-}
+.sec-title { @apply flex items-center gap-3 text-[1.35rem] mb-5; }
 .sec-title > span { @apply w-4 h-4 rounded-sm shrink-0; }
 .sec-title::after { content: ""; flex: 1; height: 2px; background: var(--color-panel-2); }
 .side-title { @apply font-mono text-[12px] uppercase tracking-wider text-dim mb-3 font-normal; }
 
-.note {@apply font-mono text-[12px] uppercase tracking-wider text-dim; }
+.note { @apply font-mono text-[12px] uppercase tracking-wider text-dim; }
 
-/* Tarjeta: panel de color arriba (ilustracion) y cuerpo oscuro abajo */
-.card {
-  @apply bg-panel rounded-xl overflow-hidden flex flex-col;
-  transition: transform .2s ease;
-}
-.card:hover { transform: translateY(-4px); }
+.block-panel { @apply bg-panel rounded-xl; transition: background-color .35s ease; }
+
+/* Tarjeta: panel de color arriba (pictograma) y cuerpo abajo */
+.card { @apply bg-panel rounded-xl overflow-hidden flex flex-col; transition: transform .2s ease, background-color .35s ease; }
+.card:hover, .lift:hover { transform: translateY(-4px); }
+.lift { transition: transform .2s ease; }
 .card-art { @apply relative overflow-hidden; }
 .card-art svg { display: block; width: 100%; height: 100%; }
-.card:hover .card-art svg { transform: scale(1.04); }
-.card-art svg { transition: transform .5s ease; }
+
+/* Pictogramas que cobran vida al pasar el mouse por su bloque */
+.art-host svg * { transform-box: fill-box; transform-origin: center; }
+.art-host:hover .a-spin { animation: a-spin 2.4s linear infinite; }
+.art-host:hover .a-pulse { animation: a-pulse .9s ease-in-out infinite; }
+.art-host:hover .a-pulse2 { animation: a-pulse .9s ease-in-out .3s infinite; }
+.art-host:hover .a-rise { animation: a-rise 1.2s ease-in-out infinite; }
+.art-host:hover .a-bob { animation: a-bob .7s ease-in-out infinite; }
+.art-host:hover .a-slide { animation: a-slide .9s ease-in-out infinite; }
+.art-host:hover .a-slide-r { animation: a-slide .9s ease-in-out infinite reverse; }
+.art-host:hover .a-wiggle { animation: a-wiggle .6s ease-in-out infinite; }
+.art-host:hover .a-flash { animation: a-flash .8s steps(2) infinite; }
+@keyframes a-spin { to { transform: rotate(360deg); } }
+@keyframes a-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(1.08); } }
+@keyframes a-rise { 0% { transform: translateY(6px); opacity: 0; } 40% { opacity: 1; } 100% { transform: translateY(-8px); opacity: 0; } }
+@keyframes a-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes a-slide { 0%, 100% { transform: translateX(-7px); } 50% { transform: translateX(7px); } }
+@keyframes a-wiggle { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes a-flash { 0% { opacity: 1; } 100% { opacity: .2; } }
 
 .btn { @apply inline-flex items-center gap-2 px-5 py-3 font-bold rounded-lg border-2 border-cream transition-colors; }
 .btn-solid { background: var(--color-cream); color: var(--color-night); }
@@ -65,11 +94,18 @@ section[id] { scroll-margin-top: 5.5rem; }
 .btn-line:hover { background: var(--color-cream); color: var(--color-night); }
 
 .tag { @apply font-mono text-[11px] px-2 py-0.5 rounded bg-panel-2 text-cream/80; }
+.chip { @apply text-[14px] px-2.5 py-1 rounded-md bg-panel-2 text-cream/85; transition: background-color .15s, color .15s, transform .15s; }
+.chip:hover { background: var(--color-cream); color: var(--color-night); transform: translateY(-2px); }
+
+details.more > summary { @apply font-bold text-[15px] cursor-pointer underline underline-offset-4 mt-3 list-none inline-block; }
+details.more > summary::-webkit-details-marker { display: none; }
+details.more[open] > summary .when-closed, details.more:not([open]) > summary .when-open { display: none; }
 
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .card, .card-art svg { transition: none; }
+  .card, .lift, body { transition: none; }
+  .art-host svg * { animation: none !important; }
   html { scroll-behavior: auto; }
 }

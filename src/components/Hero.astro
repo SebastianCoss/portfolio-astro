@@ -1,30 +1,53 @@
-﻿---
-import { stats } from '../data/cv';
+---
+import { content, type Lang } from '../data/cv';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = content[lang];
 const tiles = ['bg-c-red', 'bg-c-green', 'bg-c-blue', 'bg-c-purple'];
+// los valores puramente numericos (5+, 100%, 469) cuentan hacia arriba al aparecer
+const parts = (v: string) => { const m = v.match(/^(\d+)(\D*)$/); return m ? { n: m[1], suffix: m[2] } : null; };
 ---
 
 <section id="perfil">
-  <h2 class="sec-title"><span class="bg-c-red"></span>Perfil</h2>
-  <p class="text-2xl md:text-[1.9rem] font-bold leading-snug max-w-3xl">
-    Hago el backend de sistemas que no se pueden caer.
-  </p>
+  <h2 class="sec-title"><span class="bg-c-red"></span>{c.ui.secProfile}</h2>
+  <p class="text-2xl md:text-[1.9rem] font-bold leading-snug max-w-3xl">{c.profile.headline}</p>
   <div class="mt-4 space-y-3 text-cream/75 max-w-3xl">
-    <p>
-      Soy desarrollador .NET con más de cinco años de oficio. Lo que más disfruto es agarrar un sistema viejo,
-      de esos que nadie quiere tocar, y convertirlo en una API que da gusto mantener. Trabajo con .NET 10,
-      Clean Architecture y SQL Server, casi siempre con despliegue en Azure.
-    </p>
-    <p>
-      Hoy soy líder técnico en <strong class="text-cream">Ryndem</strong>. Fuera de ahí construyo mis propios
-      productos y fui líder de la comunidad AWS User Group Morelos.
-    </p>
+    {c.profile.paragraphs.map((p) => <p>{p}</p>)}
   </div>
   <div class="mt-6 grid grid-cols-2 xl:grid-cols-4 gap-3">
-    {stats.map((s, i) => (
-      <div data-perch class:list={['rounded-xl p-4', tiles[i]]}>
-        <p class="text-3xl font-bold">{s.value}</p>
-        <p class="mt-1 text-[14px] leading-snug text-cream/90">{s.label}</p>
-      </div>
-    ))}
+    {c.stats.map((s, i) => {
+      const p = parts(s.value);
+      return (
+        <div data-perch class:list={['on-color lift rounded-xl p-4', tiles[i]]}>
+          <p class="text-3xl font-bold tabular-nums">
+            {p ? <span data-count={p.n} data-suffix={p.suffix}>{s.value}</span> : s.value}
+          </p>
+          <p class="mt-1 text-[14px] leading-snug text-cream/90">{s.label}</p>
+        </div>
+      );
+    })}
   </div>
 </section>
+
+<script>
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const nums = document.querySelectorAll<HTMLElement>('[data-count]');
+  if (!calm && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        const el = e.target as HTMLElement;
+        const end = Number(el.dataset.count), suffix = el.dataset.suffix || '';
+        const t0 = performance.now(), dur = 1100;
+        const step = (t: number) => {
+          const k = Math.min((t - t0) / dur, 1);
+          el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))) + suffix;
+          if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+    }, { threshold: 0.6 });
+    nums.forEach((n) => io.observe(n));
+  }
+</script>

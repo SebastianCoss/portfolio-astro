@@ -13,8 +13,8 @@ const d = 'rgba(0,0,0,.24)';
     <g>
       <path d="M90 120 L160 55 L235 115 M160 55 L160 140" stroke={d} stroke-width="10" fill="none" />
       <circle cx="160" cy="55" r="30" fill={c} />
-      <circle cx="90" cy="120" r="22" fill={d} />
-      <circle cx="235" cy="115" r="22" fill={d} />
+      <circle class="a-pulse" cx="90" cy="120" r="22" fill={d} />
+      <circle class="a-pulse2" cx="235" cy="115" r="22" fill={d} />
       <circle cx="160" cy="140" r="16" fill={c} />
     </g>
   )}
@@ -26,18 +26,18 @@ const d = 'rgba(0,0,0,.24)';
       <circle cx="112" cy="90" r="26" fill="none" stroke={d} stroke-width="6" />
       <circle cx="208" cy="90" r="40" fill={d} />
       <circle cx="208" cy="90" r="26" fill="none" stroke={c} stroke-width="6" />
-      <path d="M124 30 H190 V20 L212 36 L190 52 V42 H124 Z" fill={c} />
-      <path d="M196 150 H130 V160 L108 144 L130 128 V138 H196 Z" fill={d} />
+      <path class="a-slide" d="M124 30 H190 V20 L212 36 L190 52 V42 H124 Z" fill={c} />
+      <path class="a-slide-r" d="M196 150 H130 V160 L108 144 L130 128 V138 H196 Z" fill={d} />
     </g>
   )}
 
   {/* telefono con ondas de senal: app movil de campo (SEUZ) */}
   {kind === 'phone' && (
     <g>
-      <path d="M92 44 A 66 66 0 0 0 92 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
-      <path d="M70 26 A 92 92 0 0 0 70 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
-      <path d="M228 44 A 66 66 0 0 1 228 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
-      <path d="M250 26 A 92 92 0 0 1 250 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path class="a-pulse" d="M92 44 A 66 66 0 0 0 92 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path class="a-pulse2" d="M70 26 A 92 92 0 0 0 70 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path class="a-pulse" d="M228 44 A 66 66 0 0 1 228 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path class="a-pulse2" d="M250 26 A 92 92 0 0 1 250 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
       <rect x="124" y="18" width="72" height="144" rx="12" fill={c} />
       <rect x="134" y="34" width="52" height="92" rx="3" fill={d} />
       <circle cx="160" cy="144" r="7" fill={d} />
@@ -50,8 +50,8 @@ const d = 'rgba(0,0,0,.24)';
     <g>
       <circle cx="160" cy="96" r="72" fill="none" stroke={d} stroke-width="8" stroke-dasharray="20 12" />
       <ellipse cx="160" cy="146" rx="26" ry="7" fill={d} />
-      <path d="M160 144 L128 84 A 36 36 0 1 1 192 84 Z" fill={c} />
-      <circle cx="160" cy="68" r="14" fill={d} />
+      <g class="a-bob"><path d="M160 144 L128 84 A 36 36 0 1 1 192 84 Z" fill={c} />
+      <circle cx="160" cy="68" r="14" fill={d} /></g>
     </g>
   )}
 
@@ -60,7 +60,7 @@ const d = 'rgba(0,0,0,.24)';
     <g>
       <path d="M160 22 L246 66 H74 Z" fill={c} />
       <rect x="82" y="72" width="156" height="10" fill={d} />
-      {[0, 1, 2, 3].map((i) => <rect x={94 + i * 38} y="88" width="18" height="52" fill={i % 2 ? d : c} />)}
+      {[0, 1, 2, 3].map((i) => <rect class={i % 2 ? "a-pulse" : "a-pulse2"} x={94 + i * 38} y="88" width="18" height="52" fill={i % 2 ? d : c} />)}
       <rect x="74" y="144" width="172" height="14" fill={c} />
     </g>
   )}
@@ -68,11 +68,11 @@ const d = 'rgba(0,0,0,.24)';
   {/* engrane: taller automotriz (ERP) */}
   {kind === 'gear' && (
     <g>
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+      <g class="a-spin">{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
         <rect x="146" y="20" width="28" height="36" rx="4" fill={c} transform={`rotate(${a} 160 90)`} />
       ))}
       <circle cx="160" cy="90" r="50" fill={c} />
-      <circle cx="160" cy="90" r="22" fill={d} />
+      <circle cx="160" cy="90" r="22" fill={d} /></g>
       <rect x="226" y="120" width="60" height="14" rx="7" fill={d} transform="rotate(-40 226 120)" />
     </g>
   )}
@@ -80,7 +80,7 @@ const d = 'rgba(0,0,0,.24)';
   {/* taza con vapor: punto de venta de cafeteria (Eckonatura) */}
   {kind === 'cup' && (
     <g>
-      <path d="M130 44 q-12 -12 0 -24 M160 44 q-12 -12 0 -24 M190 44 q-12 -12 0 -24" fill="none" stroke={d} stroke-width="8" stroke-linecap="round" />
+      <path class="a-rise" d="M130 44 q-12 -12 0 -24 M160 44 q-12 -12 0 -24 M190 44 q-12 -12 0 -24" fill="none" stroke={d} stroke-width="8" stroke-linecap="round" />
       <circle cx="214" cy="96" r="24" fill="none" stroke={c} stroke-width="12" />
       <path d="M104 62 H216 V104 A 44 44 0 0 1 172 148 H148 A 44 44 0 0 1 104 104 Z" fill={c} />
       <rect x="92" y="152" width="136" height="10" rx="5" fill={d} />
@@ -93,16 +93,16 @@ const d = 'rgba(0,0,0,.24)';
       <rect x="132" y="38" width="46" height="22" rx="5" fill={c} />
       <rect x="78" y="54" width="164" height="100" rx="12" fill={c} />
       <circle cx="160" cy="104" r="36" fill={d} />
-      <circle cx="160" cy="104" r="20" fill={c} />
-      <circle cx="222" cy="72" r="7" fill={d} />
+      <circle class="a-pulse" cx="160" cy="104" r="20" fill={c} />
+      <circle class="a-flash" cx="222" cy="72" r="7" fill={d} />
     </g>
   )}
 
   {/* microfono con ondas: grabadora de reuniones (KodaMemo) */}
   {kind === 'mic' && (
     <g>
-      {[0, 1, 2].map((i) => <rect x={62 + i * 18} y={74 - i * 8 + (i === 1 ? -12 : 0)} width="9" height={32 + i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
-      {[0, 1, 2].map((i) => <rect x={213 + i * 18} y={58 + i * 8 + (i === 1 ? -12 : 0)} width="9" height={64 - i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
+      {[0, 1, 2].map((i) => <rect class={i % 2 ? "a-pulse" : "a-pulse2"} x={62 + i * 18} y={74 - i * 8 + (i === 1 ? -12 : 0)} width="9" height={32 + i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
+      {[0, 1, 2].map((i) => <rect class={i % 2 ? "a-pulse" : "a-pulse2"} x={213 + i * 18} y={58 + i * 8 + (i === 1 ? -12 : 0)} width="9" height={64 - i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
       <rect x="138" y="20" width="44" height="86" rx="22" fill={c} />
       <path d="M122 82 A 38 38 0 0 0 198 82" fill="none" stroke={c} stroke-width="9" stroke-linecap="round" />
       <rect x="155.500" y="120" width="9" height="28" fill={c} />
@@ -112,7 +112,7 @@ const d = 'rgba(0,0,0,.24)';
 
   {/* carita de bebe: seguimiento infantil (FollowBaby) */}
   {kind === 'baby' && (
-    <g>
+    <g class="a-wiggle">
       <circle cx="102" cy="94" r="14" fill={d} />
       <circle cx="218" cy="94" r="14" fill={d} />
       <circle cx="160" cy="94" r="58" fill={c} />
@@ -132,6 +132,7 @@ const d = 'rgba(0,0,0,.24)';
       <rect x="106" y="106" width="24" height="22" fill={c} />
       <rect x="190" y="106" width="24" height="22" fill={c} />
       <rect x="196" y="34" width="18" height="34" fill={c} />
+      <circle class="a-rise" cx="205" cy="22" r="7" fill={d} />
     </g>
   )}
 </svg>

@@ -1,6 +1,9 @@
-﻿---
-import { projects } from '../data/cv';
+---
+import { content, type Lang } from '../data/cv';
 import Art from './Art.astro';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = content[lang];
 const look = [
   { color: 'bg-c-mustard', art: 'gear' },
   { color: 'bg-c-teal', art: 'cup' },
@@ -12,10 +15,10 @@ const look = [
 ---
 
 <section id="proyectos">
-  <h2 class="sec-title"><span class="bg-c-mustard"></span>Proyectos</h2>
+  <h2 class="sec-title"><span class="bg-c-mustard"></span>{c.ui.secProjects}</h2>
   <div class="grid sm:grid-cols-2 gap-4">
-    {projects.map((p, i) => (
-      <article data-perch class="card reveal">
+    {c.projects.map((p, i) => (
+      <article data-perch class="card art-host reveal">
         <div class:list={['card-art h-24', look[i % look.length].color]}>
           <Art kind={look[i % look.length].art} />
         </div>
@@ -29,7 +32,7 @@ const look = [
             {p.tags.map((t) => <span class="tag">{t}</span>)}
           </div>
           {p.repo && (
-            <a href={p.repo} target="_blank" rel="noopener noreferrer" class="mt-4 font-bold text-[15px] underline underline-offset-4 hover:no-underline self-start">Ver el código en GitHub →</a>
+            <a href={p.repo} target="_blank" rel="noopener noreferrer" class="mt-4 font-bold text-[15px] underline underline-offset-4 hover:no-underline self-start">{c.ui.repo}</a>
           )}
         </div>
       </article>
