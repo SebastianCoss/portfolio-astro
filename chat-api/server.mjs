@@ -1,4 +1,4 @@
-// Servicio de chat del portafolio. Sin dependencias: node:http + fetch.
+// Servicio de chat del portafolio. node:http + el SDK oficial de Anthropic (unica dependencia).
 // Recibe preguntas, las responde con Claude usando SOLO el CV como contexto.
 //
 // Seguridad (resumen):
@@ -8,6 +8,7 @@
 //  - Respuestas cortas (max_tokens) y timeout; los errores del proveedor no se exponen al visitante.
 //  - Corre en Docker sin root, sin puertos publicados (solo la red interna de Caddy).
 import http from 'node:http';
+import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'node:fs';
 
 const PORT = Number(process.env.PORT || 3000);
@@ -15,7 +16,7 @@ const API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const MODEL = process.env.CHAT_MODEL || 'claude-haiku-5-5';
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://portafolio.sysfactory.net')
   .split(',').map((s) => s.trim()).filter(Boolean);
-const MAX_TOKENS = Number(process.env.MAX_TOKENS || 350);
+const MAX_TOKENS = Number(process.env.MAX_TOKENS || 400);
 const PER_IP_MINUTE = Number(process.env.PER_IP_MINUTE || 6);
 const PER_IP_DAY = Number(process.env.PER_IP_DAY || 30);
 const GLOBAL_DAY = Number(process.env.GLOBAL_DAY || 400);
@@ -102,24 +103,30 @@ function send(res, status, obj, origin) {
   res.end(JSON.stringify(obj));
 }
 
+// SDK oficial de Anthropic: 20 s de tope y un solo reintento.
+const anthropic = new Anthropic({ apiKey: API_KEY, timeout: 20_000, maxRetries: 1 });
+
 async function askClaude(messages) {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 20_000);
   try {
-    const r = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      signal: ctrl.signal,
-      headers: { 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'content-type': 'application/json' },
-      body: JSON.stringify({ model: MODEL, max_tokens: MAX_TOKENS, system: SYSTEM, messages }),
+    const res = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      // Preguntas simples sobre un CV: sin razonamiento extendido, para que la respuesta sea rapida y barata.
+      thinking: { type: 'disabled' },
+      // El prompt (reglas + CV) es identico en cada llamada: se marca para cache y las lecturas cuestan una fraccion.
+      system: [{ type: 'text', text: SYSTEM, cache_control: { type: 'ephemeral' } }],
+      messages,
     });
-    if (!r.ok) { console.error('anthropic status', r.status); return null; }
-    const data = await r.json();
-    const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('\n').trim();
+    if (res.stop_reason === 'refusal') return null;
+    const text = res.content.filter((b) => b.type === 'text').map((b) => b.text).join(' ').trim();
     return text || null;
   } catch (e) {
-    console.error('anthropic error', e?.name);
+    if (e instanceof Anthropic.RateLimitError) console.error('anthropic: limite de uso');
+    else if (e instanceof Anthropic.AuthenticationError) console.error('anthropic: llave invalida');
+    else if (e instanceof Anthropic.APIError) console.error('anthropic status', e.status);
+    else console.error('anthropic error', e?.name);
     return null;
-  } finally { clearTimeout(timer); }
+  }
 }
 
 const server = http.createServer(async (req, res) => {

@@ -1,0 +1,87 @@
+---
+// Fondo: una malla de puntos. Cerca del cursor los puntos crecen, toman los colores de las
+// tarjetas y se apartan un poco; cada clic lanza una onda que recorre la malla.
+// Solo se repinta al mover el mouse o mientras haya ondas, asi que en reposo no gasta nada.
+---
+
+<canvas id="dot-field" aria-hidden="true"></canvas>
+
+<style is:global>
+  #dot-field { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+</style>
+
+<script>
+  const cv = document.getElementById('dot-field') as HTMLCanvasElement | null;
+  if (cv) {
+    const ctx = cv.getContext('2d')!;
+    const GAP = 30, R = 170, PUSH = 12;
+    const COLORS = ['#d5503f', '#d39b2f', '#2b8a85', '#7d5296', '#4c5f88', '#4d7a57', '#c4567a', '#d97435'];
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = window.matchMedia('(pointer: fine)').matches;
+    const live = fine && !calm;
+    let W = 0, H = 0, dpr = 1, ink = '#f4f1d2';
+    let mx = -9999, my = -9999, pending = false, fade: number | undefined;
+    let waves: { x: number; y: number; r: number }[] = [];
+
+    const size = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = innerWidth; H = innerHeight;
+      cv.width = W * dpr; cv.height = H * dpr;
+      ink = getComputedStyle(document.documentElement).getPropertyValue('--color-cream').trim() || ink;
+      paint();
+    };
+
+    const paint = () => {
+      pending = false;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      for (let gy = GAP / 2, row = 0; gy < H; gy += GAP, row++) {
+        for (let gx = GAP / 2, col = 0; gx < W; gx += GAP, col++) {
+          let k = 0;                                   // 0 = en reposo, 1 = justo bajo el cursor
+          const dx = gx - mx, dy = gy - my;
+          const d = Math.hypot(dx, dy);
+          if (d < R) k = (1 - d / R) ** 2;
+          let wave = 0;
+          for (const w of waves) {
+            const off = Math.abs(Math.hypot(gx - w.x, gy - w.y) - w.r);
+            if (off < 26) wave = Math.max(wave, (1 - off / 26) * Math.max(0, 1 - w.r / 760));
+          }
+          const e = Math.max(k, wave);
+          if (e < 0.02) {
+            ctx.globalAlpha = 0.14; ctx.fillStyle = ink;
+            ctx.fillRect(gx - 1, gy - 1, 2, 2);
+            continue;
+          }
+          const px = gx + (d > 0.5 ? (dx / d) * PUSH * k : 0);
+          const py = gy + (d > 0.5 ? (dy / d) * PUSH * k : 0);
+          ctx.globalAlpha = 0.25 + e * 0.75;
+          ctx.fillStyle = COLORS[(col * 3 + row * 5) % COLORS.length];
+          ctx.beginPath();
+          ctx.arc(px, py, 1.2 + e * 4.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+      if (waves.length) {
+        waves.forEach((w) => { w.r += 9; });
+        waves = waves.filter((w) => w.r < 760);
+        request();
+      }
+    };
+
+    const request = () => { if (!pending) { pending = true; requestAnimationFrame(paint); } };
+
+    if (live) {
+      addEventListener('mousemove', (e) => {
+        mx = e.clientX; my = e.clientY; request();
+        clearTimeout(fade);
+        fade = window.setTimeout(() => { mx = my = -9999; request(); }, 4000);   // se apaga si dejas de mover
+      }, { passive: true });
+      addEventListener('mousedown', (e) => { if (waves.length < 4) waves.push({ x: e.clientX, y: e.clientY, r: 0 }); request(); });
+      document.addEventListener('mouseleave', () => { mx = my = -9999; request(); });
+    }
+    addEventListener('resize', size);
+    addEventListener('themechange', size);
+    size();
+  }
+</script>

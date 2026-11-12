@@ -46,6 +46,8 @@
   .cat-toggle:hover { background: #1a323d; }
   .cat-toggle[aria-pressed="false"] { opacity: .45; }
 
+  .cat-ball { position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%; background: #d5503f; box-shadow: inset -4px -4px 0 rgba(0,0,0,.28), inset 3px 3px 0 rgba(255,255,255,.22), 0 0 0 2px #f4f1d2; }
+  .cat-ball::before { content: ""; position: absolute; inset: 5px 3px; border-top: 2px solid rgba(244,241,210,.8); border-bottom: 2px solid rgba(244,241,210,.8); border-radius: 50%; }
   .cat-heart { position: absolute; color: #d5503f; font: 700 20px/1 "IBM Plex Mono", monospace; text-shadow: 2px 2px 0 rgba(0,0,0,.4); animation: cat-heart 1.25s ease-out forwards; }
   @keyframes cat-heart { 0% { opacity: 0; transform: translateY(0) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-46px) scale(1.2); } }
   @keyframes cat-squash { 0% { transform: scale(1.15, .8); } 100% { transform: scale(1); } }
@@ -214,6 +216,30 @@
       mx = e.clientX; my = e.clientY; lastX = mx; lastY = my; lastMoveAt = now;
       if (mode === 'sleep') { mode = 'sit'; say('?'); }
     }, { passive: true });
+    // Bola de estambre: rebota en el piso, las paredes y los bloques; el gato la persigue y la patea.
+    let ball: HTMLElement | null = null, bx = 0, by = 0, bvx = 0, bvy = 0, ballUntil = 0;
+    const BR = 11;
+    const throwBall = () => {
+      if (!ball) { ball = document.createElement('div'); ball.className = 'cat-ball'; marks.appendChild(ball); }
+      bx = x + face * 30; by = y - 50; bvx = face * (6 + Math.random() * 4); bvy = -11;
+      ballUntil = performance.now() + 11000;
+    };
+    const kickBall = () => { bvx = face * (5 + Math.random() * 6); bvy = -(8 + Math.random() * 5); };
+    const stepBall = (now: number) => {
+      if (!ball) return;
+      if (now > ballUntil) { ball.remove(); ball = null; say('…', 900); return; }
+      const prev = by;
+      bvy += 0.5; bx += bvx; by += bvy; bvx *= 0.995;
+      if (bx < BR) { bx = BR; bvx = Math.abs(bvx) * 0.8; }
+      if (bx > innerWidth - BR) { bx = innerWidth - BR; bvx = -Math.abs(bvx) * 0.8; }
+      if (bvy > 0) {
+        const hit = platforms().filter((p) => bx > p.l && bx < p.r && prev + BR <= p.t + 2 && by + BR >= p.t).sort((a, b) => a.t - b.t)[0];
+        if (hit) { by = hit.t - BR; bvy = -bvy * 0.62; bvx *= 0.9; if (Math.abs(bvy) < 1.6) bvy = 0; }
+      }
+      ball.style.transform = `translate(${Math.round(bx - BR)}px, ${Math.round(by - BR)}px) rotate(${Math.round(bx * 3)}deg)`;
+      ball.style.opacity = ballUntil - now < 900 ? String((ballUntil - now) / 900) : '1';
+    };
+
     // Clic sobre el gato: ronronea con corazones; cada tercer clic (o si estaba dormido) se asusta y brinca.
     const heartAt = (px: number, py: number) => {
       const h = document.createElement('div');
@@ -226,13 +252,11 @@
     addEventListener('mousedown', (e) => {
       const onCat = Math.abs(e.clientX - x) < 56 && e.clientY > y - 78 && e.clientY < y + 8;
       if (onCat && grounded) {
-        // clic al gato: cambia entre modo dia y modo noche, brinca y suelta corazones
+        // clic al gato: saca una bola de estambre y se pone a jugar con ella
         lastMoveAt = performance.now(); purrUntil = 0;
-        window.dispatchEvent(new Event('toggle-theme'));
-        const day = document.documentElement.dataset.theme === 'day';
-        say(day ? '☀ ¡miau!' : '☾ miau…', 1500);
-        heartAt(x - 14, y - 74); heartAt(x + 14, y - 82);
-        jumpTo(x + face * 40, y, 120);
+        throwBall();
+        say('¡a jugar!', 1300);
+        heartAt(x, y - 78);
       } else if (Math.hypot(mx - x, my - (y - 36)) < 170) say('¡fsss!', 1100);
     });
 
@@ -248,8 +272,11 @@
 
     const tick = () => {
       const now = performance.now();
-      const idle = now - lastMoveAt;
-      const dist = Math.hypot(mx - x, my - (y - 36));
+      stepBall(now);
+      const playing = !!ball;
+      const cx = playing ? bx : mx, cy = playing ? by : my;   // persigue la bola si hay, si no el cursor
+      const idle = playing ? 0 : now - lastMoveAt;
+      const dist = Math.hypot(cx - x, cy - (y - 36));
       frame++;
 
       if (grounded) {
@@ -261,30 +288,30 @@
           const active = idle < 5000;
           // superficie que el cursor tiene debajo (bloque o piso): ahi quiere estar el gato
           const under = platforms()
-            .filter((p) => mx > p.l - 10 && mx < p.r + 10 && p.t >= my - 24)
+            .filter((p) => cx > p.l - 10 && cx < p.r + 10 && p.t >= cy - 24)
             .sort((a, b) => a.t - b.t)[0];
-          let tx = mx + (x < mx ? -96 : 96);                     // al lado del cursor, sin taparlo
+          let tx = playing ? cx : cx + (x < cx ? -96 : 96);                     // al lado del cursor, sin taparlo
           let jumped = false;
 
           const purring = now < purrUntil;
           if (purring) { jumped = true; mode = 'sit'; if (frame % 22 === 0) heartAt(x, y - 74); }
           if (!purring && active && jumpCool === 0 && under && under.el !== ground) {
             // otro nivel (arriba o abajo): saltar hacia alla
-            const lx = Math.min(Math.max(mx, under.l + 34), under.r - 34);
+            const lx = Math.min(Math.max(cx, under.l + 34), under.r - 34);
             const rise = y - under.t;
             if (rise < 400 && Math.abs(lx - x) < 560) { jumpTo(lx, under.t, rise > 0 ? 46 : 72); jumped = true; }
             else tx = lx;                                        // muy lejos: acercarse primero
           }
-          if (!jumped && active && jumpCool === 0 && my < y - 110 && Math.abs(mx - x) < 170) {
+          if (!jumped && active && jumpCool === 0 && cy < y - 110 && Math.abs(cx - x) < 170) {
             // cursor arriba y sin bloque donde subirse: brinco para alcanzarlo
-            jumpTo(x + (mx - x) * 0.6, y, Math.min(y - my - 16, 250)); jumped = true;
+            jumpTo(x + (cx - x) * 0.6, y, Math.min(y - cy - 16, 250)); jumped = true;
           }
 
           if (!jumped) {
-            if (dist < 118 && idle < 3000) {
-              mode = 'swat'; face = mx >= x ? 1 : -1;
+            if (dist < (playing ? 70 : 118) && idle < 3000) {
+              mode = 'swat'; face = cx >= x ? 1 : -1;
               if (now - swatAt > 700) {
-                swatAt = now; scratchAt(mx, my);
+                swatAt = now; if (playing) kickBall(); else scratchAt(cx, cy);
                 if (Math.random() < 0.3) say(['¡mrrau!', 'zas', '¡mío!'][Math.floor(Math.random() * 3)], 900);
               }
             } else if (idle > 9000) {
@@ -298,7 +325,7 @@
                 const sp = curSpeed > 1.4 ? SPEED * 1.8 : SPEED;
                 x += Math.sign(d) * Math.min(Math.abs(d) * 0.09 + 0.5, sp); face = d > 0 ? 1 : -1; mode = 'walk';
                 x = Math.min(Math.max(x, here.l + 26), here.r - 26);
-              } else { mode = 'sit'; face = mx >= x ? 1 : -1; }
+              } else { mode = 'sit'; face = cx >= x ? 1 : -1; }
             }
           }
         }
