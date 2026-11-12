@@ -85,6 +85,7 @@ export interface Project {
   text: string;
   tags: string[];
   featured?: boolean;
+  repo?: string;
 }
 
 export const projects: Project[] = [
@@ -110,6 +111,7 @@ export const projects: Project[] = [
   {
     name: 'KodaMemo',
     status: 'Open source',
+    repo: 'https://github.com/SebastianCoss/kodamemo',
     text: 'Grabadora de reuniones para Android con transcripción de voz a texto en el propio dispositivo (Whisper.net) y un espacio web en Blazor para transcripciones, acuerdos, tareas y mapas mentales.',
     tags: ['MAUI', 'Whisper.net', 'Blazor'],
   },

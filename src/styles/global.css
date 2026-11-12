@@ -26,6 +26,9 @@
     @apply bg-night text-cream font-sans antialiased;
     font-size: 17px;
     line-height: 1.55;
+    /* trama de puntos muy tenue, para que el fondo no se sienta vacio */
+    background-image: radial-gradient(rgba(244,241,210,.07) 1px, transparent 1.5px);
+    background-size: 26px 26px;
   }
   ::selection { background: var(--color-cream); color: var(--color-night); }
   h1, h2, h3 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }

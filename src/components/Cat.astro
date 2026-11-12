@@ -46,6 +46,8 @@
   .cat-toggle:hover { background: #1a323d; }
   .cat-toggle[aria-pressed="false"] { opacity: .45; }
 
+  .cat-heart { position: absolute; color: #d5503f; font: 700 20px/1 "IBM Plex Mono", monospace; text-shadow: 2px 2px 0 rgba(0,0,0,.4); animation: cat-heart 1.25s ease-out forwards; }
+  @keyframes cat-heart { 0% { opacity: 0; transform: translateY(0) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-46px) scale(1.2); } }
   @keyframes cat-squash { 0% { transform: scale(1.15, .8); } 100% { transform: scale(1); } }
   @keyframes scratch-fade { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
   @media (pointer: coarse), (prefers-reduced-motion: reduce) { .cat, .cat-toggle, #cat-marks { display: none !important; } }
@@ -212,7 +214,24 @@
       mx = e.clientX; my = e.clientY; lastX = mx; lastY = my; lastMoveAt = now;
       if (mode === 'sleep') { mode = 'sit'; say('?'); }
     }, { passive: true });
-    addEventListener('mousedown', () => { if (Math.hypot(mx - x, my - (y - 36)) < 170) say('¡fsss!', 1100); });
+    // Clic sobre el gato: ronronea con corazones; cada tercer clic (o si estaba dormido) se asusta y brinca.
+    const heartAt = (px: number, py: number) => {
+      const h = document.createElement('div');
+      h.className = 'cat-heart'; h.textContent = '♥';
+      h.style.left = px + (Math.random() * 40 - 20) + 'px'; h.style.top = py + 'px';
+      marks.appendChild(h);
+      setTimeout(() => h.remove(), 1300);
+    };
+    let clicks = 0, purrUntil = 0;
+    addEventListener('mousedown', (e) => {
+      const onCat = Math.abs(e.clientX - x) < 56 && e.clientY > y - 78 && e.clientY < y + 8;
+      if (onCat && grounded) {
+        clicks++;
+        lastMoveAt = performance.now();
+        if (mode === 'sleep' || clicks % 3 === 0) { purrUntil = 0; say('¡miau!', 1000); jumpTo(x + face * 50, y, 130); }
+        else { purrUntil = performance.now() + 2000; say('prrr…', 1900); heartAt(x, y - 74); }
+      } else if (Math.hypot(mx - x, my - (y - 36)) < 170) say('¡fsss!', 1100);
+    });
 
     // Salto balistico desde donde esta hasta (tx, ty); "extra" es cuanto sube por encima del punto mas alto.
     const jumpTo = (tx: number, ty: number, extra = 48) => {
@@ -244,7 +263,9 @@
           let tx = mx + (x < mx ? -96 : 96);                     // al lado del cursor, sin taparlo
           let jumped = false;
 
-          if (active && jumpCool === 0 && under && under.el !== ground) {
+          const purring = now < purrUntil;
+          if (purring) { jumped = true; mode = 'sit'; if (frame % 22 === 0) heartAt(x, y - 74); }
+          if (!purring && active && jumpCool === 0 && under && under.el !== ground) {
             // otro nivel (arriba o abajo): saltar hacia alla
             const lx = Math.min(Math.max(mx, under.l + 34), under.r - 34);
             const rise = y - under.t;
@@ -304,6 +325,7 @@
       else if (mode === 'air') name = vy < 0 ? 'wide' : 'tuck';
       else if (mode === 'swat') name = Math.floor(frame / 8) % 2 ? 'swat2' : 'swat1';
       else if (mode === 'sleep') name = 'sleep';
+      else if (now < purrUntil) name = Math.floor(frame / 9) % 2 ? 'sit2' : 'sitBlink';   // ojos cerrados y cola rapida
       else name = frame % 260 < 8 ? 'sitBlink' : Math.floor(frame / 40) % 2 ? 'sit2' : 'sit';
       draw(name);
 

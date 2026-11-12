@@ -2,12 +2,12 @@
 import { projects } from '../data/cv';
 import Art from './Art.astro';
 const look = [
-  { color: 'bg-c-mustard', art: 'stairs' },
-  { color: 'bg-c-teal', art: 'dots' },
-  { color: 'bg-c-blue', art: 'triangle' },
-  { color: 'bg-c-pink', art: 'wave' },
-  { color: 'bg-c-orange', art: 'split' },
-  { color: 'bg-c-green', art: 'arcs' },
+  { color: 'bg-c-mustard', art: 'gear' },
+  { color: 'bg-c-teal', art: 'cup' },
+  { color: 'bg-c-blue', art: 'camera' },
+  { color: 'bg-c-pink', art: 'mic' },
+  { color: 'bg-c-orange', art: 'baby' },
+  { color: 'bg-c-green', art: 'house' },
 ];
 ---
 
@@ -28,6 +28,9 @@ const look = [
           <div class="flex flex-wrap gap-1.5">
             {p.tags.map((t) => <span class="tag">{t}</span>)}
           </div>
+          {p.repo && (
+            <a href={p.repo} target="_blank" rel="noopener noreferrer" class="mt-4 font-bold text-[15px] underline underline-offset-4 hover:no-underline self-start">Ver el código en GitHub →</a>
+          )}
         </div>
       </article>
     ))}

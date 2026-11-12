@@ -1,12 +1,14 @@
 ---
-// Ilustraciones geometricas para las tarjetas. Dos tintas: crema y una sombra del color de la tarjeta.
+// Pictogramas dibujados a mano en SVG para las tarjetas. Dos tintas: crema (c) y una sombra
+// del color de la tarjeta (d). Cada uno representa de que trata el proyecto o el empleo.
 interface Props { kind: string; }
 const { kind } = Astro.props;
 const c = '#f4f1d2';
-const d = 'rgba(0,0,0,.22)';
+const d = 'rgba(0,0,0,.24)';
 ---
 
 <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" role="presentation" aria-hidden="true">
+  {/* nodos conectados: arquitectura / perfil */}
   {kind === 'nodes' && (
     <g>
       <path d="M90 120 L160 55 L235 115 M160 55 L160 140" stroke={d} stroke-width="10" fill="none" />
@@ -16,90 +18,120 @@ const d = 'rgba(0,0,0,.22)';
       <circle cx="160" cy="140" r="16" fill={c} />
     </g>
   )}
+
+  {/* dos monedas y flechas: tipo de cambio (Ryndem) */}
+  {kind === 'exchange' && (
+    <g>
+      <circle cx="112" cy="90" r="40" fill={c} />
+      <circle cx="112" cy="90" r="26" fill="none" stroke={d} stroke-width="6" />
+      <circle cx="208" cy="90" r="40" fill={d} />
+      <circle cx="208" cy="90" r="26" fill="none" stroke={c} stroke-width="6" />
+      <path d="M124 30 H190 V20 L212 36 L190 52 V42 H124 Z" fill={c} />
+      <path d="M196 150 H130 V160 L108 144 L130 128 V138 H196 Z" fill={d} />
+    </g>
+  )}
+
+  {/* telefono con ondas de senal: app movil de campo (SEUZ) */}
   {kind === 'phone' && (
     <g>
-      <circle cx="160" cy="90" r="120" fill="none" stroke={d} stroke-width="14" />
-      <circle cx="160" cy="90" r="82" fill="none" stroke={d} stroke-width="14" />
-      <rect x="124" y="22" width="72" height="136" rx="12" fill={c} />
-      <circle cx="160" cy="138" r="7" fill={d} />
-      <rect x="136" y="38" width="48" height="8" rx="4" fill={d} />
+      <path d="M92 44 A 66 66 0 0 0 92 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path d="M70 26 A 92 92 0 0 0 70 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path d="M228 44 A 66 66 0 0 1 228 136" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <path d="M250 26 A 92 92 0 0 1 250 154" fill="none" stroke={d} stroke-width="10" stroke-linecap="round" />
+      <rect x="124" y="18" width="72" height="144" rx="12" fill={c} />
+      <rect x="134" y="34" width="52" height="92" rx="3" fill={d} />
+      <circle cx="160" cy="144" r="7" fill={d} />
+      <circle cx="160" cy="80" r="15" fill={c} />
     </g>
   )}
-  {kind === 'grid' && (
+
+  {/* pin de mapa dentro de una geocerca (Thor freelance) */}
+  {kind === 'pin' && (
     <g>
-      {[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((col) => (
-        <rect x={52 + col * 37} y={20 + r * 37} width="29" height="29" rx="3" fill={(r === 0 && col === 1) || (r === 2 && col === 4) || (r === 3 && col === 0) ? c : d} />
-      )))}
+      <circle cx="160" cy="96" r="72" fill="none" stroke={d} stroke-width="8" stroke-dasharray="20 12" />
+      <ellipse cx="160" cy="146" rx="26" ry="7" fill={d} />
+      <path d="M160 144 L128 84 A 36 36 0 1 1 192 84 Z" fill={c} />
+      <circle cx="160" cy="68" r="14" fill={d} />
     </g>
   )}
-  {kind === 'bars' && (
+
+  {/* banco con columnas (Banregio) */}
+  {kind === 'bank' && (
     <g>
-      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-        <rect x={62 + i * 29} y="22" width="20" height="136" fill={i < 3 ? c : d} />
+      <path d="M160 22 L246 66 H74 Z" fill={c} />
+      <rect x="82" y="72" width="156" height="10" fill={d} />
+      {[0, 1, 2, 3].map((i) => <rect x={94 + i * 38} y="88" width="18" height="52" fill={i % 2 ? d : c} />)}
+      <rect x="74" y="144" width="172" height="14" fill={c} />
+    </g>
+  )}
+
+  {/* engrane: taller automotriz (ERP) */}
+  {kind === 'gear' && (
+    <g>
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+        <rect x="146" y="20" width="28" height="36" rx="4" fill={c} transform={`rotate(${a} 160 90)`} />
       ))}
+      <circle cx="160" cy="90" r="50" fill={c} />
+      <circle cx="160" cy="90" r="22" fill={d} />
+      <rect x="226" y="120" width="60" height="14" rx="7" fill={d} transform="rotate(-40 226 120)" />
     </g>
   )}
-  {kind === 'circles' && (
+
+  {/* taza con vapor: punto de venta de cafeteria (Eckonatura) */}
+  {kind === 'cup' && (
     <g>
-      {[78, 66, 54, 42, 30, 18].map((r, i) => (
-        <circle cx="160" cy={90 - i * 5} r={r} fill={c} opacity={0.25 + i * 0.15} />
-      ))}
+      <path d="M130 44 q-12 -12 0 -24 M160 44 q-12 -12 0 -24 M190 44 q-12 -12 0 -24" fill="none" stroke={d} stroke-width="8" stroke-linecap="round" />
+      <circle cx="214" cy="96" r="24" fill="none" stroke={c} stroke-width="12" />
+      <path d="M104 62 H216 V104 A 44 44 0 0 1 172 148 H148 A 44 44 0 0 1 104 104 Z" fill={c} />
+      <rect x="92" y="152" width="136" height="10" rx="5" fill={d} />
     </g>
   )}
-  {kind === 'dots' && (
+
+  {/* camara: evidencia fotografica remota (flotas) */}
+  {kind === 'camera' && (
     <g>
-      <rect x="40" y="86" width="240" height="8" fill={d} />
-      {[6, 10, 15, 21, 28].map((r, i) => (
-        <circle cx={58 + i * 52 + i * i * 1.5} cy="90" r={r} fill={i === 4 ? c : d} />
-      ))}
-      <circle cx="58" cy="90" r="6" fill={c} />
+      <rect x="132" y="38" width="46" height="22" rx="5" fill={c} />
+      <rect x="78" y="54" width="164" height="100" rx="12" fill={c} />
+      <circle cx="160" cy="104" r="36" fill={d} />
+      <circle cx="160" cy="104" r="20" fill={c} />
+      <circle cx="222" cy="72" r="7" fill={d} />
     </g>
   )}
-  {kind === 'triangle' && (
+
+  {/* microfono con ondas: grabadora de reuniones (KodaMemo) */}
+  {kind === 'mic' && (
     <g>
-      <rect x="100" y="30" width="120" height="120" fill={d} />
-      <circle cx="160" cy="90" r="72" fill={d} />
-      <path d="M160 34 L216 138 L104 138 Z" fill={c} />
+      {[0, 1, 2].map((i) => <rect x={62 + i * 18} y={74 - i * 8 + (i === 1 ? -12 : 0)} width="9" height={32 + i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
+      {[0, 1, 2].map((i) => <rect x={213 + i * 18} y={58 + i * 8 + (i === 1 ? -12 : 0)} width="9" height={64 - i * 16 + (i === 1 ? 24 : 0)} rx="4.5" fill={d} />)}
+      <rect x="138" y="20" width="44" height="86" rx="22" fill={c} />
+      <path d="M122 82 A 38 38 0 0 0 198 82" fill="none" stroke={c} stroke-width="9" stroke-linecap="round" />
+      <rect x="155.500" y="120" width="9" height="28" fill={c} />
+      <rect x="132" y="146" width="56" height="10" rx="5" fill={c} />
     </g>
   )}
-  {kind === 'wave' && (
-    <g fill="none" stroke-linecap="round">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <path d={`M30 ${50 + i * 20} C 80 ${20 + i * 20}, 110 ${80 + i * 20}, 160 ${50 + i * 20} S 240 ${20 + i * 20}, 290 ${50 + i * 20}`} stroke={i === 2 ? c : d} stroke-width="9" />
-      ))}
-    </g>
-  )}
-  {kind === 'split' && (
+
+  {/* carita de bebe: seguimiento infantil (FollowBaby) */}
+  {kind === 'baby' && (
     <g>
-      <path d="M160 24 A66 66 0 0 0 160 156 Z" fill={c} transform="translate(-10 0)" />
-      <path d="M160 24 A66 66 0 0 1 160 156 Z" fill={d} transform="translate(10 14)" />
-      <circle cx="238" cy="42" r="12" fill={c} />
+      <circle cx="102" cy="94" r="14" fill={d} />
+      <circle cx="218" cy="94" r="14" fill={d} />
+      <circle cx="160" cy="94" r="58" fill={c} />
+      <path d="M160 36 q-18 -14 -4 -24 q12 -4 14 8" fill="none" stroke={c} stroke-width="8" stroke-linecap="round" />
+      <circle cx="140" cy="88" r="7" fill={d} />
+      <circle cx="180" cy="88" r="7" fill={d} />
+      <path d="M142 112 Q160 130 178 112" fill="none" stroke={d} stroke-width="7" stroke-linecap="round" />
     </g>
   )}
-  {kind === 'arcs' && (
-    <g fill="none">
-      {[40, 70, 100, 130].map((r, i) => (
-        <path d={`M${90} ${160 - r} A ${r} ${r} 0 0 1 ${90 + r} 160`} stroke={i === 1 ? c : d} stroke-width="16" />
-      ))}
-      <rect x="82" y="152" width="16" height="16" fill={c} />
-    </g>
-  )}
-  {kind === 'stairs' && (
+
+  {/* casa con etiqueta de valor: avaluos */}
+  {kind === 'house' && (
     <g>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <rect x={60 + i * 40} y={130 - i * 26} width="40" height={30 + i * 26} fill={i === 4 ? c : d} />
-      ))}
-    </g>
-  )}
-  {kind === 'stack' && (
-    <g>
-      {[0, 1, 2].map((i) => (
-        <g>
-          <rect x="105" y={52 + i * 34} width="110" height="26" fill={i === 0 ? c : d} />
-          <ellipse cx="160" cy={78 + i * 34} rx="55" ry="13" fill={i === 0 ? c : d} />
-          <ellipse cx="160" cy={52 + i * 34} rx="55" ry="13" fill={i === 0 ? c : 'rgba(0,0,0,.34)'} />
-        </g>
-      ))}
+      <path d="M160 24 L250 92 H70 Z" fill={c} />
+      <rect x="92" y="92" width="136" height="64" fill={d} />
+      <rect x="146" y="112" width="28" height="44" fill={c} />
+      <rect x="106" y="106" width="24" height="22" fill={c} />
+      <rect x="190" y="106" width="24" height="22" fill={c} />
+      <rect x="196" y="34" width="18" height="34" fill={c} />
     </g>
   )}
 </svg>
