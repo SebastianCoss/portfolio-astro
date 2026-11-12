@@ -1,50 +1,46 @@
-﻿<section class="grid grid-cols-1 lg:grid-cols-4 gap-6" id="stack">
-  <div class="lg:col-span-1 bento-card glow-indigo rounded-2xl p-8 flex flex-col justify-center anime-reveal-left">
-    <span class="text-emerald-500 text-[10px] font-bold uppercase tracking-[0.4em] mb-4">[04] STACK</span>
-    <h2 class="text-white text-3xl font-bold leading-tight">Herramientas Enterprise</h2>
-  </div>
-  <div class="lg:col-span-3 bento-card rounded-2xl p-10 anime-reveal-right">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-x-12 gap-y-10">
-      <div class="space-y-4">
-        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
-          <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Core
-        </h4>
-        <ul class="space-y-3 text-sm text-white font-medium">
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> .NET 8 / C#</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> Java Spring</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> Python</li>
-        </ul>
-      </div>
-      <div class="space-y-4">
-        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
-          <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Data
-        </h4>
-        <ul class="space-y-3 text-sm text-white font-medium">
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> SQL Server</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> PostgreSQL</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span> Redis</li>
-        </ul>
-      </div>
-      <div class="space-y-4">
-        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
-          <span class="w-1 h-1 rounded-full bg-indigo-500"></span> Infra
-        </h4>
-        <ul class="space-y-3 text-sm text-white font-medium">
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> AWS / Azure</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> Docker</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> Kubernetes</li>
-        </ul>
-      </div>
-      <div class="space-y-4">
-        <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
-          <span class="w-1 h-1 rounded-full bg-indigo-500"></span> Patterns
-        </h4>
-        <ul class="space-y-3 text-sm text-white font-medium">
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> Clean Arch</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> DDD / TDD</li>
-          <li class="flex items-center gap-2 anime-tech-list-item"><span class="w-1.5 h-1.5 bg-indigo-500/20 border border-indigo-500 rounded-sm"></span> CI/CD</li>
-        </ul>
+﻿---
+import { stackGroups, education, extras } from '../data/cv';
+---
+
+<section class="space-y-6" id="stack">
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <div class="lg:col-span-1 bento-card glow-indigo rounded-2xl p-8 flex flex-col justify-center anime-reveal-left">
+      <span class="text-emerald-500 text-[10px] font-bold uppercase tracking-[0.4em] mb-4">[04] STACK</span>
+      <h2 class="text-white text-3xl font-bold leading-tight">Herramientas y tecnologías</h2>
+    </div>
+    <div class="lg:col-span-3 bento-card rounded-2xl p-10 anime-reveal-right">
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-x-12 gap-y-10">
+        {stackGroups.map((g) => (
+          <div class="space-y-4">
+            <h4 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 flex items-center gap-2">
+              <span class:list={['w-1 h-1 rounded-full', g.accent === 'emerald' ? 'bg-emerald-500' : 'bg-indigo-500']}></span> {g.title}
+            </h4>
+            <ul class="space-y-3 text-sm text-white font-medium">
+              {g.items.map((i) => (
+                <li class="flex items-center gap-2 anime-tech-list-item">
+                  <span class:list={['w-1.5 h-1.5 border rounded-sm', g.accent === 'emerald' ? 'bg-emerald-500/20 border-emerald-500' : 'bg-indigo-500/20 border-indigo-500']}></span> {i}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
     </div>
+  </div>
+
+  <div class="bento-card rounded-2xl p-8 anime-reveal-left" id="education">
+    <span class="text-indigo-500 text-[10px] font-bold uppercase tracking-[0.4em]">[05] FORMACIÓN</span>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+      {education.map((e) => (
+        <div>
+          <p class="text-white font-bold">{e.title}</p>
+          <p class="text-slate-400 text-sm">{e.place}</p>
+          <p class="text-[10px] text-slate-500 font-mono tracking-widest uppercase mt-1">{e.period}</p>
+        </div>
+      ))}
+    </div>
+    <ul class="mt-6 space-y-1 text-sm text-slate-400">
+      {extras.map((x) => <li>• {x}</li>)}
+    </ul>
   </div>
 </section>

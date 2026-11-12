@@ -1,130 +1,42 @@
 ﻿---
-import { Image } from "astro:assets";
-import erpTallerImg from "../assets/projects/erp-taller.png";
+import { Image } from 'astro:assets';
+import erpTallerImg from '../assets/projects/erp-taller.png';
+import { projects } from '../data/cv';
+
+const badge: Record<string, string> = {
+  'Producción': 'bg-emerald-500 text-slate-950',
+  'Open source': 'bg-sky-400 text-slate-950',
+  'En desarrollo': 'bg-indigo-500 text-white',
+  'Prueba de concepto': 'bg-amber-400 text-slate-950',
+};
 ---
 
 <section class="space-y-10" id="projects">
-  <div class="flex items-end justify-between px-2 anime-reveal-header">
-    <div>
-      <span
-        class="text-indigo-500 text-[10px] font-bold uppercase tracking-[0.4em]"
-        >[03] SELECCIÓN</span
-      >
-      <h2 class="text-white text-4xl font-bold mt-2">Proyectos Destacados</h2>
-    </div>
+  <div class="px-2 anime-reveal-header">
+    <span class="text-indigo-500 text-[10px] font-bold uppercase tracking-[0.4em]">[03] SELECCIÓN</span>
+    <h2 class="text-white text-4xl font-bold mt-2">Proyectos</h2>
   </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="bento-card rounded-2xl flex flex-col group anime-project-card">
-      <div class="aspect-[16/10] bg-slate-900 relative overflow-hidden">
-        <Image
-          src={erpTallerImg}
-          alt="ERP Automotriz - Sistema de Gestión de Taller"
-          class="w-full h-full object-cover opacity-50 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
-        />
-        <div class="absolute top-4 right-4">
-          <span
-            class="px-3 py-1 bg-emerald-500 text-slate-950 text-[9px] font-black rounded-full uppercase tracking-tighter"
-            >Producción</span
-          >
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {projects.map((p) => (
+      <article class:list={['bento-card rounded-2xl flex flex-col group anime-project-card', p.featured && 'lg:col-span-2']}>
+        {p.featured && (
+          <div class="aspect-[16/7] bg-slate-900 relative overflow-hidden">
+            <Image src={erpTallerImg} alt="ERP para taller automotriz" class="w-full h-full object-cover opacity-50 group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" />
+          </div>
+        )}
+        <div class="p-8 flex-1 flex flex-col">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h3 class="text-white text-xl font-bold">{p.name}</h3>
+            <span class:list={['px-3 py-1 text-[9px] font-black rounded-full uppercase tracking-tighter whitespace-nowrap', badge[p.status]]}>{p.status}</span>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">{p.text}</p>
+          <div class="flex flex-wrap gap-2 anime-tech-tag">
+            {p.tags.map((t) => (
+              <span class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700">{t}</span>
+            ))}
+          </div>
         </div>
-      </div>
-      <div class="p-8 flex-1 flex flex-col">
-        <h3 class="text-white text-xl font-bold mb-3">ERP Automotriz</h3>
-        <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">
-          Gestión para armadoras con inventario en tiempo real y módulos
-          contables de alta precisión.
-        </p>
-        <div class="flex flex-wrap gap-2 anime-tech-tag">
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >.NET 8</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >SQL Server</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >Redis</span
-          >
-        </div>
-      </div>
-    </div>
-    <div class="bento-card rounded-2xl flex flex-col group anime-project-card">
-      <div class="aspect-[16/10] bg-slate-900 relative overflow-hidden">
-        <img
-          alt="Project 2"
-          class="w-full h-full object-cover opacity-50 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzge9bAvEPRkr-RqzvUCODEFBVo694oAqxLJmW9eF4VK_5Id8w5-IeLFSD0LuafgIyoe47chUHe21Md0NJWJd7FAJFypLP5fvmtXz29HXkKMKSpRfDi9ihuIC_DnW0RWawp1sdX2k511K0lGUN1PEQnYkp4BgQeWwEn2fc712RWXBMtLRMws5zHnY9lUfKH0FM4PDozLHcBOYknYh3e43JjTrCOYKV-YXD9sALM9-dM-K7BIuiVzfstFgZEpeNqz0I1SvgOcXEz7Y"
-        />
-        <div class="absolute top-4 right-4">
-          <span
-            class="px-3 py-1 bg-emerald-500 text-slate-950 text-[9px] font-black rounded-full uppercase tracking-tighter"
-            >Producción</span
-          >
-        </div>
-      </div>
-      <div class="p-8 flex-1 flex flex-col">
-        <h3 class="text-white text-xl font-bold mb-3">
-          GastroPOS & Waiter App
-        </h3>
-        <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">
-          Punto de venta distribuido con sincronización offline-first y
-          notificaciones de baja latencia.
-        </p>
-        <div class="flex flex-wrap gap-2 anime-tech-tag">
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >Node.js</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >PostgreSQL</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >Flutter</span
-          >
-        </div>
-      </div>
-    </div>
-    <div class="bento-card rounded-2xl flex flex-col group anime-project-card">
-      <div class="aspect-[16/10] bg-slate-900 relative overflow-hidden">
-        <img
-          alt="Project 3"
-          class="w-full h-full object-cover opacity-50 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOES7o5eU8T-P9LFlvYCHu5HUPdTmVd6pI7WlUC06081tl9-cDx634cNctVSJBdNV7ZQ_tD0I2kIXGcYriUq3Z1T65lDe0TI8JXwcwyjMWJQ669mDnuaBJD6g6zdK-iJ21D2ZS7FNLaiW9XfJOR0KVgdCYqkjMyyGGgbvkyXcdFLI51eKKYErJfY7xaOJWq0O44_vPd-QGig6vdAC1XfaIyAyXBTYxNiD7Qj4eu5cwWW_qh0nN0MSbh1UpYx5mI7zdBCiJWC20vcg"
-        />
-        <div class="absolute top-4 right-4">
-          <span
-            class="px-3 py-1 bg-indigo-500 text-white text-[9px] font-black rounded-full uppercase tracking-tighter"
-            >MVP</span
-          >
-        </div>
-      </div>
-      <div class="p-8 flex-1 flex flex-col">
-        <h3 class="text-white text-xl font-bold mb-3">
-          PropTech Valuation Engine
-        </h3>
-        <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">
-          Motor de valoración algorítmica basado en datos históricos y
-          proyecciones de plusvalía urbana.
-        </p>
-        <div class="flex flex-wrap gap-2 anime-tech-tag">
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >Python</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >Azure</span
-          >
-          <span
-            class="text-[9px] font-bold bg-slate-800/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700"
-            >CosmosDB</span
-          >
-        </div>
-      </div>
-    </div>
+      </article>
+    ))}
   </div>
 </section>
