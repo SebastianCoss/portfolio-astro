@@ -1,0 +1,126 @@
+---
+// Chat "Pregúntale a mi CV". Habla con /api/chat (servicio propio en el VPS, que llama a Claude
+// con el CV como contexto). Todo el texto se pinta con textContent: nada de HTML del modelo.
+const suggestions = [
+  '¿Qué experiencia tiene con .NET?',
+  '¿Qué hizo en Ryndem?',
+  '¿Qué proyectos destacan?',
+  '¿Tiene experiencia liderando equipos?',
+];
+---
+
+<button id="chat-fab" type="button" data-open-chat aria-controls="chat-panel" aria-expanded="false"
+  class="fixed right-4 bottom-4 z-50 px-5 py-3 rounded-full bg-emerald-500 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 active:scale-95 transition-all">
+  💬 Pregúntale a mi CV
+</button>
+
+<section id="chat-panel" role="dialog" aria-label="Chat sobre el CV de Cristóbal" hidden
+  class="fixed z-50 right-4 bottom-4 w-[min(92vw,24rem)] h-[min(78vh,34rem)] flex flex-col rounded-2xl border border-slate-700/60 bg-slate-900/95 backdrop-blur-xl shadow-2xl overflow-hidden">
+  <header class="flex items-center justify-between px-4 py-3 border-b border-slate-800">
+    <div>
+      <p class="text-white font-bold text-sm">Pregúntale a mi CV</p>
+      <p class="text-[10px] text-slate-500">Asistente con IA · responde solo con información del CV</p>
+    </div>
+    <button id="chat-close" type="button" aria-label="Cerrar chat" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800">✕</button>
+  </header>
+
+  <div id="chat-log" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 text-sm" aria-live="polite">
+    <div class="chat-msg bot">¡Hola! Soy el asistente del CV de Cristóbal. Pregúntame por su experiencia, proyectos o tecnologías.</div>
+    <div id="chat-suggest" class="flex flex-wrap gap-2 pt-1">
+      {suggestions.map((s) => (
+        <button type="button" data-q={s} class="text-xs px-3 py-1.5 rounded-full border border-slate-700 text-slate-300 hover:border-emerald-500/60 hover:text-emerald-300 transition-colors">{s}</button>
+      ))}
+    </div>
+  </div>
+
+  <form id="chat-form" class="p-3 border-t border-slate-800 flex gap-2" autocomplete="off">
+    <input id="chat-input" type="text" maxlength="300" placeholder="Escribe tu pregunta…" aria-label="Tu pregunta"
+      class="flex-1 min-w-0 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none" />
+    <button id="chat-send" type="submit" class="px-4 rounded-xl bg-emerald-500 text-slate-950 font-bold text-sm disabled:opacity-40">Enviar</button>
+  </form>
+</section>
+
+<style is:global>
+  /* El chat solo aparece si el servicio responde (ver script). */
+  html:not(.chat-ready) [data-open-chat] { display: none !important; }
+  .chat-msg { max-width: 88%; padding: .55rem .8rem; border-radius: .9rem; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .chat-msg.bot { background: rgb(30 41 59 / .8); color: #e2e8f0; border-bottom-left-radius: .25rem; }
+  .chat-msg.me { margin-left: auto; background: #10b981; color: #022c22; border-bottom-right-radius: .25rem; }
+  .chat-msg.err { background: rgb(127 29 29 / .4); color: #fecaca; }
+  .chat-msg.typing { color: #94a3b8; }
+</style>
+
+<script>
+  const fab = document.getElementById('chat-fab') as HTMLButtonElement;
+  const panel = document.getElementById('chat-panel') as HTMLElement;
+  const closeBtn = document.getElementById('chat-close') as HTMLButtonElement;
+  const log = document.getElementById('chat-log') as HTMLElement;
+  const form = document.getElementById('chat-form') as HTMLFormElement;
+  const input = document.getElementById('chat-input') as HTMLInputElement;
+  const send = document.getElementById('chat-send') as HTMLButtonElement;
+  const suggest = document.getElementById('chat-suggest') as HTMLElement;
+
+  type Turn = { role: 'user' | 'assistant'; content: string };
+  const history: Turn[] = [];
+  let busy = false;
+
+  fetch('/api/health').then((r) => { if (r.ok) document.documentElement.classList.add('chat-ready'); }).catch(() => {});
+
+  const open = () => {
+    panel.hidden = false; fab.hidden = true; fab.setAttribute('aria-expanded', 'true');
+    input.focus();
+  };
+  const close = () => {
+    panel.hidden = true; fab.hidden = false; fab.setAttribute('aria-expanded', 'false');
+    fab.focus();
+  };
+
+  document.querySelectorAll('[data-open-chat]').forEach((el) => el.addEventListener('click', open));
+  closeBtn.addEventListener('click', close);
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) close(); });
+
+  const add = (text: string, cls: string) => {
+    const div = document.createElement('div');
+    div.className = `chat-msg ${cls}`;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  };
+
+  async function ask(question: string) {
+    const q = question.trim().slice(0, 300);
+    if (!q || busy) return;
+    busy = true; send.disabled = true; input.value = '';
+    suggest.remove();
+    add(q, 'me');
+    const typing = add('Escribiendo…', 'bot typing');
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...history, { role: 'user', content: q }].slice(-6) }),
+      });
+      const data = await res.json().catch(() => ({}));
+      typing.remove();
+      if (!res.ok || typeof data.reply !== 'string') {
+        add(typeof data.error === 'string' ? data.error : 'No pude responder ahora. Intenta de nuevo en un momento.', 'err');
+      } else {
+        history.push({ role: 'user', content: q }, { role: 'assistant', content: data.reply });
+        add(data.reply, 'bot');
+      }
+    } catch {
+      typing.remove();
+      add('No hay conexión con el asistente. Intenta de nuevo más tarde.', 'err');
+    } finally {
+      busy = false; send.disabled = false; input.focus();
+    }
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); ask(input.value); });
+  suggest.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('button[data-q]') as HTMLElement | null;
+    if (b) ask(b.dataset.q || '');
+  });
+</script>

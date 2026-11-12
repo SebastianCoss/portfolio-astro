@@ -3,6 +3,8 @@ import '../styles/global.css';
 import '@fontsource/space-grotesk/index.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Cat from '../components/Cat.astro';
+import ChatWidget from '../components/ChatWidget.astro';
 
 interface Props {
   title?: string;
@@ -66,6 +68,8 @@ const {
       </main>
       <Footer />
     </div>
+    <Cat />
+    <ChatWidget />
 
     <script type="module">
       import anime from 'animejs';

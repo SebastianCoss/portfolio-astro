@@ -1,0 +1,176 @@
+---
+// Mascota: un gato que persigue el cursor. Solo con mouse (no en pantallas tactiles),
+// respeta prefers-reduced-motion y se puede apagar con el boton de la esquina.
+---
+
+<div id="cat" class="cat sit" aria-hidden="true" hidden>
+  <svg viewBox="0 0 120 90" width="84" height="63" xmlns="http://www.w3.org/2000/svg">
+    <g class="cat-flip">
+      <!-- cola -->
+      <path class="cat-tail" d="M22 58 C 6 54, 4 34, 16 28" fill="none" stroke="#475569" stroke-width="7" stroke-linecap="round" />
+      <!-- patas traseras y delanteras -->
+      <rect class="cat-leg l1" x="30" y="66" width="9" height="18" rx="4.5" fill="#334155" />
+      <rect class="cat-leg l2" x="44" y="66" width="9" height="18" rx="4.5" fill="#475569" />
+      <rect class="cat-leg l3" x="70" y="66" width="9" height="18" rx="4.5" fill="#334155" />
+      <rect class="cat-leg l4" x="84" y="66" width="9" height="18" rx="4.5" fill="#475569" />
+      <!-- cuerpo -->
+      <ellipse class="cat-body" cx="60" cy="58" rx="38" ry="19" fill="#64748b" />
+      <ellipse cx="60" cy="66" rx="26" ry="9" fill="#cbd5e1" opacity=".55" />
+      <!-- cabeza -->
+      <g class="cat-head">
+        <path d="M82 36 L86 16 L98 30 Z" fill="#64748b" />
+        <path d="M108 36 L112 16 L100 30 Z" fill="#64748b" />
+        <path d="M86 30 L88 22 L93 29 Z" fill="#f9a8d4" />
+        <circle cx="96" cy="42" r="18" fill="#64748b" />
+        <g class="cat-eyes">
+          <ellipse class="cat-eye" cx="89" cy="40" rx="3.2" ry="4.2" fill="#10b981" />
+          <ellipse class="cat-eye" cx="104" cy="40" rx="3.2" ry="4.2" fill="#10b981" />
+          <circle class="cat-pupil" cx="89" cy="40" r="1.6" fill="#020617" />
+          <circle class="cat-pupil" cx="104" cy="40" r="1.6" fill="#020617" />
+        </g>
+        <path d="M94 47 L98 47 L96 50 Z" fill="#f9a8d4" />
+        <path d="M96 50 Q 93 54 90 52 M96 50 Q 99 54 102 52" fill="none" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round" />
+        <path d="M80 46 L68 44 M80 50 L68 52 M112 46 L124 44 M112 50 L124 52" stroke="#e2e8f0" stroke-width=".9" stroke-linecap="round" opacity=".7" />
+      </g>
+    </g>
+  </svg>
+  <span class="cat-zzz">z z z</span>
+  <span class="cat-bubble"></span>
+</div>
+
+<button id="cat-toggle" type="button" class="cat-toggle" aria-pressed="true" aria-label="Apagar o encender la mascota" title="Mascota">
+  🐾
+</button>
+
+<style is:global>
+  .cat {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 40;
+    pointer-events: none;
+    will-change: transform;
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+  }
+  .cat[hidden] { display: none; }
+  .cat .cat-flip { transform-origin: 60px 45px; transition: transform .15s; }
+  .cat.face-left .cat-flip { transform: scaleX(-1); }
+  .cat-tail { transform-origin: 22px 58px; animation: cat-tail 1.6s ease-in-out infinite; }
+  .cat.walk .cat-tail { animation-duration: .5s; }
+  .cat-leg { transform-origin: top center; }
+  .cat.walk .l1, .cat.walk .l4 { animation: cat-step .28s ease-in-out infinite; }
+  .cat.walk .l2, .cat.walk .l3 { animation: cat-step .28s ease-in-out infinite reverse; }
+  .cat.walk .cat-body { animation: cat-bob .28s ease-in-out infinite; }
+  .cat.sit .cat-leg, .cat.sleep .cat-leg { transform: scaleY(.55); }
+  .cat.sleep svg { transform: translateY(8px) scale(.96); }
+  .cat.sleep .cat-eye { ry: .6; }
+  .cat.sleep .cat-pupil { opacity: 0; }
+  .cat-zzz, .cat-bubble {
+    position: absolute; right: 2px; top: -14px; font: 700 11px/1 ui-monospace, monospace;
+    color: #94a3b8; opacity: 0; transition: opacity .3s; white-space: nowrap;
+  }
+  .cat.sleep .cat-zzz { opacity: 1; animation: cat-zzz 2s ease-in-out infinite; }
+  .cat-bubble {
+    top: -26px; right: -10px; padding: 4px 8px; border-radius: 10px;
+    background: #10b981; color: #022c22; font-family: inherit; font-size: 11px;
+  }
+  .cat.say .cat-bubble { opacity: 1; }
+  .cat-toggle {
+    position: fixed; left: 16px; bottom: 16px; z-index: 50; width: 40px; height: 40px;
+    border-radius: 9999px; border: 1px solid rgba(148, 163, 184, .3);
+    background: rgba(15, 23, 42, .85); backdrop-filter: blur(8px); cursor: pointer; font-size: 18px;
+    transition: opacity .2s, border-color .2s;
+  }
+  .cat-toggle[aria-pressed="false"] { opacity: .45; filter: grayscale(1); }
+  .cat-toggle:hover { border-color: rgba(16, 185, 129, .6); }
+  @keyframes cat-step { 0%, 100% { transform: rotate(24deg); } 50% { transform: rotate(-24deg); } }
+  @keyframes cat-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes cat-tail { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
+  @keyframes cat-zzz { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+  @media (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .cat, .cat-toggle { display: none !important; }
+  }
+</style>
+
+<script>
+  const cat = document.getElementById('cat') as HTMLElement | null;
+  const toggle = document.getElementById('cat-toggle') as HTMLButtonElement | null;
+  const fine = window.matchMedia('(pointer: fine)').matches;
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (cat && toggle && fine && !calm) {
+    const W = 84, H = 63;
+    let enabled = true;
+    try { enabled = localStorage.getItem('cat') !== 'off'; } catch { /* sin storage */ }
+
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let x = mx - 200, y = my + 60;
+    let lastMove = performance.now();
+    let lastX = mx, lastY = my, speed = 0;
+    let raf = 0, talkTimer: number | undefined;
+    const bubble = cat.querySelector('.cat-bubble') as HTMLElement;
+
+    const say = (txt: string) => {
+      bubble.textContent = txt;
+      cat.classList.add('say');
+      clearTimeout(talkTimer);
+      talkTimer = window.setTimeout(() => cat.classList.remove('say'), 2200);
+    };
+
+    const setState = (s: 'walk' | 'sit' | 'sleep') => {
+      cat.classList.remove('walk', 'sit', 'sleep');
+      cat.classList.add(s);
+    };
+
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      const now = performance.now();
+      const dt = Math.max(now - lastMove, 1);
+      speed = Math.hypot(mx - lastX, my - lastY) / dt; // px/ms
+      lastX = mx; lastY = my; lastMove = now;
+      if (cat.classList.contains('sleep')) { setState('sit'); say('¡Miau!'); }
+    }, { passive: true });
+
+    // Al hacer clic en cualquier lado el gato maulla.
+    window.addEventListener('mousedown', () => say('Miau'));
+
+    const tick = () => {
+      const now = performance.now();
+      // El gato se queda a ~90px del cursor, un poco por debajo, para no taparlo.
+      const tx = mx - W / 2 + (x < mx ? -90 : 90);
+      const ty = my - H / 2 + 28;
+      const dx = tx - x, dy = ty - y;
+      const dist = Math.hypot(dx, dy);
+
+      if (now - lastMove > 5000) {
+        setState('sleep');
+      } else if (dist > 14) {
+        const follow = speed > 1.4 ? 0.14 : 0.06; // corre si mueves rapido
+        x += dx * follow; y += dy * follow;
+        setState('walk');
+        cat.classList.toggle('face-left', dx < 0);
+      } else {
+        setState('sit');
+        cat.classList.toggle('face-left', mx < x + W / 2);
+      }
+      x = Math.min(Math.max(x, 0), window.innerWidth - W);
+      y = Math.min(Math.max(y, 0), window.innerHeight - H);
+      cat.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const apply = () => {
+      toggle.setAttribute('aria-pressed', String(enabled));
+      cat.hidden = !enabled;
+      cancelAnimationFrame(raf);
+      if (enabled) { lastMove = performance.now(); raf = requestAnimationFrame(tick); }
+      try { localStorage.setItem('cat', enabled ? 'on' : 'off'); } catch { /* sin storage */ }
+    };
+
+    toggle.addEventListener('click', () => { enabled = !enabled; apply(); });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf); else if (enabled) raf = requestAnimationFrame(tick);
+    });
+    apply();
+  }
+</script>
