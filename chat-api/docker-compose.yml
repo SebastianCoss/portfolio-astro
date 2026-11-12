@@ -1,0 +1,21 @@
+# Servicio de chat del portafolio. Se une a la red "edge" de Caddy; no publica puertos.
+# La API key va en /srv/secrets/portafolio-chat.env (modo 600, solo root):  ANTHROPIC_API_KEY=...
+services:
+  portafolio-chat:
+    build: .
+    container_name: portafolio-chat
+    restart: unless-stopped
+    env_file: /srv/secrets/portafolio-chat.env
+    environment:
+      ALLOWED_ORIGINS: https://portafolio.sysfactory.net
+    networks: [edge]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 128m
+    pids_limit: 64
+    tmpfs: [/tmp]
+
+networks:
+  edge:
+    external: true
