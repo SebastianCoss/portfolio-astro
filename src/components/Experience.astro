@@ -2,30 +2,26 @@
 import { jobs } from '../data/cv';
 ---
 
-<section class="space-y-10" id="experience">
-  <div class="px-2 anime-reveal-header">
-    <span class="text-emerald-500 text-[10px] font-bold uppercase tracking-[0.4em]">[02] TRAYECTORIA</span>
-    <h2 class="text-white text-4xl font-bold mt-2">Experiencia profesional</h2>
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<section id="experiencia" class="py-16 border-t border-line">
+  <h2 data-perch class="text-3xl md:text-4xl font-semibold mb-12 reveal">Dónde he trabajado</h2>
+  <div class="space-y-14">
     {jobs.map((job) => (
-      <article class="bento-card glow-indigo rounded-2xl p-8 flex flex-col group anime-exp-card">
-        <div class="flex items-center justify-between mb-6">
-          <span class="text-[10px] text-slate-500 font-mono tracking-widest uppercase">{job.period}</span>
-          {job.current && (
-            <span class="px-3 py-1 bg-emerald-500 text-slate-950 text-[9px] font-black rounded-full uppercase tracking-tighter">Actual</span>
-          )}
+      <article class="grid md:grid-cols-[13rem_1fr] gap-4 md:gap-10 reveal">
+        <div>
+          <p class="note">{job.period}</p>
+          {job.current && <p class="mt-1 inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-rust text-paper">ahora</p>}
         </div>
-        <h3 class="text-white text-2xl font-bold mb-1">{job.company}</h3>
-        <p class="text-indigo-400 text-sm font-bold mb-6 uppercase tracking-wider">{job.role}</p>
-        <ul class="space-y-3 text-sm leading-relaxed">
-          {job.highlights.map((h) => (
-            <li class="flex gap-3">
-              <span class="mt-2 w-1.5 h-1.5 shrink-0 bg-emerald-500/20 border border-emerald-500 rounded-sm"></span>
-              <span class="text-slate-400"><strong class="text-slate-200 font-semibold">{h.title}.</strong> {h.text}</span>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <h3 data-perch class="text-2xl font-semibold">{job.company}</h3>
+          <p class="text-muted mb-4">{job.role}</p>
+          <ul class="space-y-2.5">
+            {job.highlights.map((h) => (
+              <li data-perch class="pl-4 relative before:content-['–'] before:absolute before:left-0 before:text-rust">
+                <strong class="font-semibold">{h.title}.</strong> <span class="text-muted">{h.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </article>
     ))}
   </div>

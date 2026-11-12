@@ -1,176 +1,277 @@
 ---
-// Mascota: un gato que persigue el cursor. Solo con mouse (no en pantallas tactiles),
-// respeta prefers-reduced-motion y se puede apagar con el boton de la esquina.
+// Gato negro con "fisica": camina sobre el piso y sobre los bloques marcados con data-perch,
+// salta hacia arriba si el cursor sube, se deja caer si baja y manotea al cursor cuando lo tiene cerca.
+// Solo con mouse; respeta prefers-reduced-motion; se apaga con el boton de la esquina.
 ---
 
 <div id="cat" class="cat sit" aria-hidden="true" hidden>
-  <svg viewBox="0 0 120 90" width="84" height="63" xmlns="http://www.w3.org/2000/svg">
-    <g class="cat-flip">
-      <!-- cola -->
-      <path class="cat-tail" d="M22 58 C 6 54, 4 34, 16 28" fill="none" stroke="#475569" stroke-width="7" stroke-linecap="round" />
-      <!-- patas traseras y delanteras -->
-      <rect class="cat-leg l1" x="30" y="66" width="9" height="18" rx="4.5" fill="#334155" />
-      <rect class="cat-leg l2" x="44" y="66" width="9" height="18" rx="4.5" fill="#475569" />
-      <rect class="cat-leg l3" x="70" y="66" width="9" height="18" rx="4.5" fill="#334155" />
-      <rect class="cat-leg l4" x="84" y="66" width="9" height="18" rx="4.5" fill="#475569" />
-      <!-- cuerpo -->
-      <ellipse class="cat-body" cx="60" cy="58" rx="38" ry="19" fill="#64748b" />
-      <ellipse cx="60" cy="66" rx="26" ry="9" fill="#cbd5e1" opacity=".55" />
-      <!-- cabeza -->
-      <g class="cat-head">
-        <path d="M82 36 L86 16 L98 30 Z" fill="#64748b" />
-        <path d="M108 36 L112 16 L100 30 Z" fill="#64748b" />
-        <path d="M86 30 L88 22 L93 29 Z" fill="#f9a8d4" />
-        <circle cx="96" cy="42" r="18" fill="#64748b" />
-        <g class="cat-eyes">
-          <ellipse class="cat-eye" cx="89" cy="40" rx="3.2" ry="4.2" fill="#10b981" />
-          <ellipse class="cat-eye" cx="104" cy="40" rx="3.2" ry="4.2" fill="#10b981" />
-          <circle class="cat-pupil" cx="89" cy="40" r="1.6" fill="#020617" />
-          <circle class="cat-pupil" cx="104" cy="40" r="1.6" fill="#020617" />
+  <svg viewBox="0 0 110 80" width="110" height="80" xmlns="http://www.w3.org/2000/svg">
+    <g class="c-flip">
+      <g class="c-all">
+        <path class="c-tail" d="M20 46 C 2 46, -4 24, 10 14" fill="none" stroke="#0c0c0e" stroke-width="7" stroke-linecap="round" />
+        <!-- patas lejanas -->
+        <g class="leg h2"><rect x="30" y="50" width="8" height="26" rx="4" fill="#16161a" /></g>
+        <g class="leg f2"><rect x="70" y="50" width="8" height="26" rx="4" fill="#16161a" /></g>
+        <!-- cuerpo -->
+        <ellipse class="c-body" cx="52" cy="44" rx="30" ry="15" fill="#0c0c0e" />
+        <!-- patas cercanas -->
+        <g class="leg h1"><ellipse cx="34" cy="50" rx="10" ry="12" fill="#0c0c0e" /><rect x="29" y="54" width="8" height="22" rx="4" fill="#0c0c0e" /></g>
+        <g class="leg f1">
+          <rect x="66" y="48" width="8" height="28" rx="4" fill="#0c0c0e" />
+          <g class="claws"><path d="M72 72 l5 4 M74 70 l6 2 M70 74 l3 5" stroke="#e8e3d6" stroke-width="1.4" stroke-linecap="round" /></g>
         </g>
-        <path d="M94 47 L98 47 L96 50 Z" fill="#f9a8d4" />
-        <path d="M96 50 Q 93 54 90 52 M96 50 Q 99 54 102 52" fill="none" stroke="#0f172a" stroke-width="1.2" stroke-linecap="round" />
-        <path d="M80 46 L68 44 M80 50 L68 52 M112 46 L124 44 M112 50 L124 52" stroke="#e2e8f0" stroke-width=".9" stroke-linecap="round" opacity=".7" />
+        <!-- cabeza -->
+        <g class="c-head">
+          <path d="M80 26 L82 10 L92 21 Z" fill="#0c0c0e" />
+          <path d="M96 21 L104 10 L106 27 Z" fill="#0c0c0e" />
+          <circle cx="93" cy="33" r="14" fill="#0c0c0e" />
+          <g class="c-eyes">
+            <path class="eye" d="M84 32 Q 88 27 92 32 Q 88 36 84 32 Z" fill="#f2d21b" />
+            <path class="eye" d="M95 32 Q 99 27 103 32 Q 99 36 95 32 Z" fill="#f2d21b" />
+            <ellipse class="pupil" cx="88" cy="32" rx="1" ry="3.2" fill="#0c0c0e" />
+            <ellipse class="pupil" cx="99" cy="32" rx="1" ry="3.2" fill="#0c0c0e" />
+          </g>
+          <path d="M92 39 L96 39 L94 41 Z" fill="#3a2a30" />
+          <path d="M80 38 L70 36 M80 41 L70 43 M107 38 L117 36 M107 41 L117 43" stroke="#9a9588" stroke-width=".8" stroke-linecap="round" opacity=".7" />
+        </g>
       </g>
     </g>
   </svg>
-  <span class="cat-zzz">z z z</span>
   <span class="cat-bubble"></span>
 </div>
+<div id="cat-marks" aria-hidden="true"></div>
 
-<button id="cat-toggle" type="button" class="cat-toggle" aria-pressed="true" aria-label="Apagar o encender la mascota" title="Mascota">
-  🐾
+<button id="cat-toggle" type="button" class="cat-toggle" aria-pressed="true" aria-label="Apagar o encender al gato" title="Gato">
+  🐈‍⬛
 </button>
 
 <style is:global>
   .cat {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 40;
-    pointer-events: none;
-    will-change: transform;
-    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+    position: fixed; left: 0; top: 0; z-index: 40; pointer-events: none; will-change: transform;
+    width: 110px; height: 80px;
+    filter: drop-shadow(0 0 1px rgba(255,255,255,.55)) drop-shadow(0 8px 6px rgba(0,0,0,.22));
   }
   .cat[hidden] { display: none; }
-  .cat .cat-flip { transform-origin: 60px 45px; transition: transform .15s; }
-  .cat.face-left .cat-flip { transform: scaleX(-1); }
-  .cat-tail { transform-origin: 22px 58px; animation: cat-tail 1.6s ease-in-out infinite; }
-  .cat.walk .cat-tail { animation-duration: .5s; }
-  .cat-leg { transform-origin: top center; }
-  .cat.walk .l1, .cat.walk .l4 { animation: cat-step .28s ease-in-out infinite; }
-  .cat.walk .l2, .cat.walk .l3 { animation: cat-step .28s ease-in-out infinite reverse; }
-  .cat.walk .cat-body { animation: cat-bob .28s ease-in-out infinite; }
-  .cat.sit .cat-leg, .cat.sleep .cat-leg { transform: scaleY(.55); }
-  .cat.sleep svg { transform: translateY(8px) scale(.96); }
-  .cat.sleep .cat-eye { ry: .6; }
-  .cat.sleep .cat-pupil { opacity: 0; }
-  .cat-zzz, .cat-bubble {
-    position: absolute; right: 2px; top: -14px; font: 700 11px/1 ui-monospace, monospace;
-    color: #94a3b8; opacity: 0; transition: opacity .3s; white-space: nowrap;
-  }
-  .cat.sleep .cat-zzz { opacity: 1; animation: cat-zzz 2s ease-in-out infinite; }
+  .cat svg { overflow: visible; display: block; transform-origin: 50% 100%; }
+  .c-flip { transform-origin: 55px 40px; }
+  .cat.left .c-flip { transform: scaleX(-1); }
+  .c-all, .leg, .c-tail, .c-head, .claws { transform-box: fill-box; }
+  .leg { transform-origin: 50% 10%; }
+  .c-tail { transform-origin: 90% 85%; animation: tail 2.6s ease-in-out infinite; }
+  .claws { opacity: 0; }
+
+  .eye { transition: transform .12s; transform-box: fill-box; transform-origin: center; }
+  .cat .c-eyes { filter: drop-shadow(0 0 3px rgba(242,210,27,.9)); animation: blink 5.5s infinite; transform-box: fill-box; transform-origin: center; }
+  .cat.sleep .c-eyes { animation: none; transform: scaleY(.12); filter: none; }
+
+  /* caminar */
+  .cat.walk .h1, .cat.walk .f2 { animation: step .34s ease-in-out infinite; }
+  .cat.walk .h2, .cat.walk .f1 { animation: step .34s ease-in-out infinite reverse; }
+  .cat.walk .c-all { animation: bob .34s ease-in-out infinite; }
+  .cat.walk .c-tail { animation-duration: 1.2s; }
+  /* sentado */
+  .cat.sit .c-all { transform: rotate(-22deg) translateY(4px); transform-origin: 30% 90%; transition: transform .25s; }
+  .cat.sit .h1, .cat.sit .h2 { transform: scaleY(.7); }
+  /* aire */
+  .cat.air .f1, .cat.air .f2 { transform: rotate(-55deg); }
+  .cat.air .h1, .cat.air .h2 { transform: rotate(42deg); }
+  .cat.air .c-all { transform: rotate(var(--tilt, 0deg)); }
+  .cat.land svg { animation: squash .22s ease-out; }
+  /* manotazo */
+  .cat.swat .c-all { transform: rotate(-12deg); transition: transform .12s; }
+  .cat.swat .f1 { animation: swat .38s ease-in-out infinite; transform-origin: 50% 0; }
+  .cat.swat .f1 .claws { opacity: 1; }
+  .cat.swat .c-tail { animation-duration: .45s; }
+  /* dormir */
+  .cat.sleep .c-all { transform: translateY(14px) scaleY(.7); transform-origin: 50% 100%; }
+  .cat.sleep .leg { opacity: 0; }
+
   .cat-bubble {
-    top: -26px; right: -10px; padding: 4px 8px; border-radius: 10px;
-    background: #10b981; color: #022c22; font-family: inherit; font-size: 11px;
+    position: absolute; top: -22px; left: 50%; translate: -50% 0; opacity: 0; transition: opacity .2s;
+    padding: 2px 9px; border-radius: 6px; background: #1d1b17; color: #f4efe6;
+    font: 500 12px/1.4 "JetBrains Mono", monospace; white-space: nowrap;
   }
   .cat.say .cat-bubble { opacity: 1; }
+
+  #cat-marks { position: fixed; inset: 0; pointer-events: none; z-index: 39; }
+  .scratch {
+    position: absolute; width: 34px; height: 34px; opacity: .9; animation: scratch-fade 1.1s ease-out forwards;
+  }
+  .scratch i { position: absolute; top: 0; width: 2px; height: 100%; background: #c4501d; border-radius: 2px; transform-origin: top; }
+  .scratch i:nth-child(1) { left: 6px; transform: rotate(-22deg); }
+  .scratch i:nth-child(2) { left: 16px; transform: rotate(-22deg); height: 112%; }
+  .scratch i:nth-child(3) { left: 26px; transform: rotate(-22deg); }
+
   .cat-toggle {
-    position: fixed; left: 16px; bottom: 16px; z-index: 50; width: 40px; height: 40px;
-    border-radius: 9999px; border: 1px solid rgba(148, 163, 184, .3);
-    background: rgba(15, 23, 42, .85); backdrop-filter: blur(8px); cursor: pointer; font-size: 18px;
-    transition: opacity .2s, border-color .2s;
+    position: fixed; left: 16px; bottom: 16px; z-index: 50; width: 42px; height: 42px; border-radius: 6px;
+    border: 1.5px solid #1d1b17; background: #fbf8f1; cursor: pointer; font-size: 20px; box-shadow: 3px 3px 0 #1d1b17;
+    transition: transform .12s, box-shadow .12s, opacity .2s;
   }
-  .cat-toggle[aria-pressed="false"] { opacity: .45; filter: grayscale(1); }
-  .cat-toggle:hover { border-color: rgba(16, 185, 129, .6); }
-  @keyframes cat-step { 0%, 100% { transform: rotate(24deg); } 50% { transform: rotate(-24deg); } }
-  @keyframes cat-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
-  @keyframes cat-tail { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(10deg); } }
-  @keyframes cat-zzz { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-  @media (pointer: coarse), (prefers-reduced-motion: reduce) {
-    .cat, .cat-toggle { display: none !important; }
-  }
+  .cat-toggle:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 #1d1b17; }
+  .cat-toggle[aria-pressed="false"] { opacity: .55; filter: grayscale(1); }
+
+  @keyframes step { 0%,100% { transform: rotate(26deg); } 50% { transform: rotate(-26deg); } }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+  @keyframes tail { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(9deg); } }
+  @keyframes blink { 0%,94%,100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+  @keyframes squash { 0% { transform: scale(1.12,.82); } 100% { transform: scale(1); } }
+  @keyframes swat { 0%,100% { transform: rotate(0); } 45% { transform: rotate(-78deg); } }
+  @keyframes scratch-fade { 0% { opacity: .95; transform: scale(.6); } 15% { transform: scale(1); } 100% { opacity: 0; } }
+  @media (pointer: coarse), (prefers-reduced-motion: reduce) { .cat, .cat-toggle, #cat-marks { display: none !important; } }
 </style>
 
 <script>
   const cat = document.getElementById('cat') as HTMLElement | null;
+  const marks = document.getElementById('cat-marks') as HTMLElement | null;
   const toggle = document.getElementById('cat-toggle') as HTMLButtonElement | null;
   const fine = window.matchMedia('(pointer: fine)').matches;
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (cat && toggle && fine && !calm) {
-    const W = 84, H = 63;
+  if (cat && marks && toggle && fine && !calm) {
+    const W = 110, FEET = 78;         // ancho del sprite y distancia de la cima del sprite a las patas
+    const G = 0.55;                   // gravedad (px/frame^2)
+    const SPEED = 3.1;
     let enabled = true;
     try { enabled = localStorage.getItem('cat') !== 'off'; } catch { /* sin storage */ }
 
-    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    let x = mx - 200, y = my + 60;
-    let lastMove = performance.now();
-    let lastX = mx, lastY = my, speed = 0;
-    let raf = 0, talkTimer: number | undefined;
+    type Plat = { el: Element | null; l: number; r: number; t: number };
+    let mx = innerWidth * 0.6, my = innerHeight * 0.5;
+    let lastMoveAt = performance.now(), lastX = mx, lastY = my, curSpeed = 0;
+    let x = innerWidth * 0.3, y = innerHeight, vx = 0, vy = 0;       // x = centro, y = pies
+    let ground: Element | null = null;   // null con grounded=true => piso
+    let grounded = true, face = 1, mode: 'walk' | 'sit' | 'sleep' | 'swat' | 'air' = 'sit';
+    let jumpCool = 0, swatAt = 0, talk: number | undefined, raf = 0, wantDown = false;
     const bubble = cat.querySelector('.cat-bubble') as HTMLElement;
 
-    const say = (txt: string) => {
-      bubble.textContent = txt;
-      cat.classList.add('say');
-      clearTimeout(talkTimer);
-      talkTimer = window.setTimeout(() => cat.classList.remove('say'), 2200);
+    const say = (t: string, ms = 1500) => {
+      bubble.textContent = t; cat.classList.add('say'); clearTimeout(talk);
+      talk = window.setTimeout(() => cat.classList.remove('say'), ms);
     };
 
-    const setState = (s: 'walk' | 'sit' | 'sleep') => {
-      cat.classList.remove('walk', 'sit', 'sleep');
-      cat.classList.add(s);
+    const platforms = (): Plat[] => {
+      const out: Plat[] = [];
+      document.querySelectorAll('[data-perch]').forEach((el) => {
+        const b = el.getBoundingClientRect();
+        if (b.width < 140 || b.top < 70 || b.top > innerHeight - 30 || b.bottom < 0) return;
+        out.push({ el, l: b.left, r: b.right, t: b.top });
+      });
+      out.push({ el: null, l: 0, r: innerWidth, t: innerHeight });
+      return out;
+    };
+    const rectOf = (el: Element | null): Plat | null => {
+      if (!el) return { el: null, l: 0, r: innerWidth, t: innerHeight };
+      const b = el.getBoundingClientRect();
+      if (b.top < 60 || b.top > innerHeight - 20 || b.bottom < 0) return null;
+      return { el, l: b.left, r: b.right, t: b.top };
     };
 
-    window.addEventListener('mousemove', (e) => {
-      mx = e.clientX; my = e.clientY;
+    const marksAt = (px: number, py: number) => {
+      const s = document.createElement('div');
+      s.className = 'scratch'; s.style.left = px - 16 + 'px'; s.style.top = py - 16 + 'px';
+      s.innerHTML = '<i></i><i></i><i></i>';
+      marks.appendChild(s);
+      setTimeout(() => s.remove(), 1200);
+    };
+
+    addEventListener('mousemove', (e) => {
       const now = performance.now();
-      const dt = Math.max(now - lastMove, 1);
-      speed = Math.hypot(mx - lastX, my - lastY) / dt; // px/ms
-      lastX = mx; lastY = my; lastMove = now;
-      if (cat.classList.contains('sleep')) { setState('sit'); say('¡Miau!'); }
+      curSpeed = Math.hypot(e.clientX - lastX, e.clientY - lastY) / Math.max(now - lastMoveAt, 1);
+      mx = e.clientX; my = e.clientY; lastX = mx; lastY = my; lastMoveAt = now;
+      if (mode === 'sleep') { mode = 'sit'; say('...'); }
     }, { passive: true });
+    addEventListener('mousedown', () => { if (Math.hypot(mx - x, my - (y - 40)) < 160) say('¡fsss!', 1200); });
 
-    // Al hacer clic en cualquier lado el gato maulla.
-    window.addEventListener('mousedown', () => say('Miau'));
+    const jumpTo = (p: Plat, tx: number) => {
+      const h = Math.max(y - p.t, 0) + 46;
+      vy = -Math.sqrt(2 * G * h);
+      const tAir = (-vy + Math.sqrt(vy * vy + 2 * G * Math.max(y - p.t, 0) * -1 * -1)) / G || 24;
+      vx = Math.max(-9, Math.min(9, (tx - x) / Math.max(tAir, 18)));
+      grounded = false; ground = null; jumpCool = 40;
+      if (vx) face = vx > 0 ? 1 : -1;
+    };
 
     const tick = () => {
       const now = performance.now();
-      // El gato se queda a ~90px del cursor, un poco por debajo, para no taparlo.
-      const tx = mx - W / 2 + (x < mx ? -90 : 90);
-      const ty = my - H / 2 + 28;
-      const dx = tx - x, dy = ty - y;
-      const dist = Math.hypot(dx, dy);
+      const idle = now - lastMoveAt;
+      const dist = Math.hypot(mx - x, my - (y - 36));
 
-      if (now - lastMove > 5000) {
-        setState('sleep');
-      } else if (dist > 14) {
-        const follow = speed > 1.4 ? 0.14 : 0.06; // corre si mueves rapido
-        x += dx * follow; y += dy * follow;
-        setState('walk');
-        cat.classList.toggle('face-left', dx < 0);
-      } else {
-        setState('sit');
-        cat.classList.toggle('face-left', mx < x + W / 2);
+      if (grounded) {
+        const here = rectOf(ground);
+        if (!here) { grounded = false; ground = null; vy = 0; vx = 0; }
+        else {
+          y = here.t;
+          const lo = here.l + 24, hi = here.r - 24;
+          // objetivo horizontal: junto al cursor, sin taparlo
+          let tx = mx + (x < mx ? -110 : 110);
+          const dyCur = my - y;
+          const plats = platforms().filter((p) => p.el !== ground);
+
+          wantDown = false;
+          if (jumpCool > 0) jumpCool--;
+          if (dyCur < -80 && jumpCool === 0 && idle < 4000) {
+            // el cursor esta arriba: buscar un bloque alcanzable (hasta ~260px mas alto) cercano en x
+            const cand = plats
+              .filter((p) => p.t < y - 24 && y - p.t < 330 && p.r > x - 220 && p.l < x + 220)
+              .sort((a, b) => Math.abs(a.t - my) - Math.abs(b.t - my))[0];
+            if (cand) {
+              const px = Math.min(Math.max(x, cand.l + 30), cand.r - 30);
+              tx = px;
+              if (Math.abs(px - x) < 70 || (x >= cand.l + 20 && x <= cand.r - 20)) {
+                jumpTo(cand, Math.min(Math.max(mx, cand.l + 30), cand.r - 30));
+              }
+            }
+          } else if (dyCur > 110 && ground) {
+            wantDown = true;                    // el cursor esta abajo: caminar al borde y bajar
+            tx = x < (here.l + here.r) / 2 ? here.l - 40 : here.r + 40;
+          }
+
+          if (grounded) {
+            if (dist < 120 && idle < 3000 && !wantDown) {
+              mode = 'swat'; vx = 0; face = mx >= x ? 1 : -1;
+              if (now - swatAt > 750) { swatAt = now; marksAt(mx, my); if (Math.random() < 0.3) say(['¡mrrau!', 'zas', '¡mío!'][Math.floor(Math.random() * 3)], 900); }
+            } else {
+              const d = tx - x;
+              const sp = curSpeed > 1.4 ? SPEED * 1.7 : SPEED;
+              if (idle > 9000) mode = 'sleep';
+              else if (Math.abs(d) > 14) {
+                x += Math.sign(d) * Math.min(Math.abs(d) * 0.08 + 0.4, sp); face = d > 0 ? 1 : -1; mode = 'walk';
+              } else { mode = 'sit'; face = mx >= x ? 1 : -1; }
+              if (!wantDown) x = Math.min(Math.max(x, lo), hi);
+              else if (x < here.l || x > here.r) { grounded = false; ground = null; vx = Math.sign(x - (here.l + here.r) / 2) * 1.5; vy = 0; }
+            }
+          }
+        }
       }
-      x = Math.min(Math.max(x, 0), window.innerWidth - W);
-      y = Math.min(Math.max(y, 0), window.innerHeight - H);
-      cat.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
+
+      if (!grounded) {
+        mode = 'air';
+        const prevY = y;
+        vy += G; x += vx; y += vy;
+        if (vy > 0) {
+          const hit = platforms().filter((p) => x > p.l + 6 && x < p.r - 6 && prevY <= p.t + 4 && y >= p.t).sort((a, b) => a.t - b.t)[0];
+          if (hit) { y = hit.t; ground = hit.el; grounded = true; vx = 0; vy = 0; mode = 'sit'; cat.classList.add('land'); setTimeout(() => cat.classList.remove('land'), 240); }
+        }
+        cat.style.setProperty('--tilt', Math.max(-30, Math.min(30, vy * 3 * face)) + 'deg');
+      }
+
+      x = Math.min(Math.max(x, W / 2), innerWidth - W / 2);
+      if (y > innerHeight) { y = innerHeight; ground = null; if (!grounded) { grounded = true; vx = 0; vy = 0; mode = 'sit'; } }
+
+      cat.classList.remove('walk', 'sit', 'sleep', 'swat', 'air');
+      cat.classList.add(mode);
+      cat.classList.toggle('left', face < 0);
+      cat.style.transform = `translate(${(x - W / 2).toFixed(1)}px, ${(y - FEET).toFixed(1)}px)`;
       raf = requestAnimationFrame(tick);
     };
 
     const apply = () => {
       toggle.setAttribute('aria-pressed', String(enabled));
-      cat.hidden = !enabled;
-      cancelAnimationFrame(raf);
-      if (enabled) { lastMove = performance.now(); raf = requestAnimationFrame(tick); }
+      cat.hidden = !enabled; cancelAnimationFrame(raf);
+      if (enabled) { lastMoveAt = performance.now(); raf = requestAnimationFrame(tick); }
       try { localStorage.setItem('cat', enabled ? 'on' : 'off'); } catch { /* sin storage */ }
     };
-
     toggle.addEventListener('click', () => { enabled = !enabled; apply(); });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) cancelAnimationFrame(raf); else if (enabled) raf = requestAnimationFrame(tick);
-    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else if (enabled) raf = requestAnimationFrame(tick); });
     apply();
   }
 </script>
