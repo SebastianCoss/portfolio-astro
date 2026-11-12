@@ -9,31 +9,27 @@ const links = [
 ];
 ---
 
-<footer id="contacto" class="mt-16 bg-ink text-paper">
-  <div class="max-w-5xl mx-auto px-6 md:px-8 py-20 grid md:grid-cols-2 gap-12">
+<footer id="contacto" class="max-w-6xl mx-auto px-5 md:px-8 pt-14 pb-10">
+  <div data-perch class="bg-c-red rounded-xl p-8 md:p-12 grid md:grid-cols-2 gap-10">
     <div>
-      <h2 class="text-4xl md:text-5xl font-semibold leading-tight">¿Tienes un sistema que mejorar?</h2>
-      <p class="mt-5 text-paper/70 max-w-md">
+      <h2 class="text-4xl md:text-5xl">¿Tienes un sistema que mejorar?</h2>
+      <p class="mt-5 text-lg text-cream/90 max-w-md">
         Cuéntame qué necesitas. Respondo yo, no un formulario. Y si prefieres, pregúntale primero a mi CV.
       </p>
-      <button type="button" data-open-chat class="mt-6 inline-flex px-5 py-3 rounded-md border-[1.5px] border-paper/60 font-semibold hover:bg-paper hover:text-ink transition">
-        Pregúntale a mi CV
-      </button>
+      <button type="button" data-open-chat class="btn btn-solid mt-7">Pregúntale a mi CV</button>
     </div>
-    <ul class="divide-y divide-paper/15 self-center">
+    <ul class="self-center divide-y-2 divide-cream/25">
       {links.map((l) => (
         <li>
           <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer" class="flex items-baseline justify-between gap-6 py-4 group">
-            <span class="font-mono text-[12px] text-paper/50">{l.label}</span>
-            <span class="font-semibold group-hover:text-[#f0a070] transition-colors break-all text-right">{l.text}</span>
+            <span class="font-mono text-[12px] uppercase tracking-wider text-cream/75">{l.label}</span>
+            <span class="font-bold text-right break-all group-hover:underline underline-offset-4">{l.text}</span>
           </a>
         </li>
       ))}
     </ul>
   </div>
-  <div class="border-t border-paper/10">
-    <p class="max-w-5xl mx-auto px-6 md:px-8 py-6 font-mono text-[12px] text-paper/40">
-      © 2026 Cristóbal Sebastián García Coss · Hecho en Morelos, con Astro y un poco de ayuda de Claude.
-    </p>
-  </div>
+  <p class="mt-8 font-mono text-[12px] text-dim">
+    © 2026 Cristóbal Sebastián García Coss · Hecho en Morelos con Astro. El gato todavía no tiene nombre.
+  </p>
 </footer>

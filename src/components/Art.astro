@@ -1,0 +1,105 @@
+---
+// Ilustraciones geometricas para las tarjetas. Dos tintas: crema y una sombra del color de la tarjeta.
+interface Props { kind: string; }
+const { kind } = Astro.props;
+const c = '#f4f1d2';
+const d = 'rgba(0,0,0,.22)';
+---
+
+<svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid meet" role="presentation" aria-hidden="true">
+  {kind === 'nodes' && (
+    <g>
+      <path d="M90 120 L160 55 L235 115 M160 55 L160 140" stroke={d} stroke-width="10" fill="none" />
+      <circle cx="160" cy="55" r="30" fill={c} />
+      <circle cx="90" cy="120" r="22" fill={d} />
+      <circle cx="235" cy="115" r="22" fill={d} />
+      <circle cx="160" cy="140" r="16" fill={c} />
+    </g>
+  )}
+  {kind === 'phone' && (
+    <g>
+      <circle cx="160" cy="90" r="120" fill="none" stroke={d} stroke-width="14" />
+      <circle cx="160" cy="90" r="82" fill="none" stroke={d} stroke-width="14" />
+      <rect x="124" y="22" width="72" height="136" rx="12" fill={c} />
+      <circle cx="160" cy="138" r="7" fill={d} />
+      <rect x="136" y="38" width="48" height="8" rx="4" fill={d} />
+    </g>
+  )}
+  {kind === 'grid' && (
+    <g>
+      {[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((col) => (
+        <rect x={52 + col * 37} y={20 + r * 37} width="29" height="29" rx="3" fill={(r === 0 && col === 1) || (r === 2 && col === 4) || (r === 3 && col === 0) ? c : d} />
+      )))}
+    </g>
+  )}
+  {kind === 'bars' && (
+    <g>
+      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+        <rect x={62 + i * 29} y="22" width="20" height="136" fill={i < 3 ? c : d} />
+      ))}
+    </g>
+  )}
+  {kind === 'circles' && (
+    <g>
+      {[78, 66, 54, 42, 30, 18].map((r, i) => (
+        <circle cx="160" cy={90 - i * 5} r={r} fill={c} opacity={0.25 + i * 0.15} />
+      ))}
+    </g>
+  )}
+  {kind === 'dots' && (
+    <g>
+      <rect x="40" y="86" width="240" height="8" fill={d} />
+      {[6, 10, 15, 21, 28].map((r, i) => (
+        <circle cx={58 + i * 52 + i * i * 1.5} cy="90" r={r} fill={i === 4 ? c : d} />
+      ))}
+      <circle cx="58" cy="90" r="6" fill={c} />
+    </g>
+  )}
+  {kind === 'triangle' && (
+    <g>
+      <rect x="100" y="30" width="120" height="120" fill={d} />
+      <circle cx="160" cy="90" r="72" fill={d} />
+      <path d="M160 34 L216 138 L104 138 Z" fill={c} />
+    </g>
+  )}
+  {kind === 'wave' && (
+    <g fill="none" stroke-linecap="round">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <path d={`M30 ${50 + i * 20} C 80 ${20 + i * 20}, 110 ${80 + i * 20}, 160 ${50 + i * 20} S 240 ${20 + i * 20}, 290 ${50 + i * 20}`} stroke={i === 2 ? c : d} stroke-width="9" />
+      ))}
+    </g>
+  )}
+  {kind === 'split' && (
+    <g>
+      <path d="M160 24 A66 66 0 0 0 160 156 Z" fill={c} transform="translate(-10 0)" />
+      <path d="M160 24 A66 66 0 0 1 160 156 Z" fill={d} transform="translate(10 14)" />
+      <circle cx="238" cy="42" r="12" fill={c} />
+    </g>
+  )}
+  {kind === 'arcs' && (
+    <g fill="none">
+      {[40, 70, 100, 130].map((r, i) => (
+        <path d={`M${90} ${160 - r} A ${r} ${r} 0 0 1 ${90 + r} 160`} stroke={i === 1 ? c : d} stroke-width="16" />
+      ))}
+      <rect x="82" y="152" width="16" height="16" fill={c} />
+    </g>
+  )}
+  {kind === 'stairs' && (
+    <g>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <rect x={60 + i * 40} y={130 - i * 26} width="40" height={30 + i * 26} fill={i === 4 ? c : d} />
+      ))}
+    </g>
+  )}
+  {kind === 'stack' && (
+    <g>
+      {[0, 1, 2].map((i) => (
+        <g>
+          <rect x="105" y={52 + i * 34} width="110" height="26" fill={i === 0 ? c : d} />
+          <ellipse cx="160" cy={78 + i * 34} rx="55" ry="13" fill={i === 0 ? c : d} />
+          <ellipse cx="160" cy={52 + i * 34} rx="55" ry="13" fill={i === 0 ? c : 'rgba(0,0,0,.34)'} />
+        </g>
+      ))}
+    </g>
+  )}
+</svg>

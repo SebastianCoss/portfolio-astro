@@ -1,10 +1,9 @@
 ﻿---
 import '../styles/global.css';
-import '@fontsource-variable/fraunces/full.css';
-import '@fontsource/instrument-sans/400.css';
-import '@fontsource/instrument-sans/500.css';
-import '@fontsource/instrument-sans/600.css';
-import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/ibm-plex-sans/400.css';
+import '@fontsource/ibm-plex-sans/500.css';
+import '@fontsource/ibm-plex-sans/700.css';
+import '@fontsource/ibm-plex-mono/400.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Cat from '../components/Cat.astro';
@@ -28,7 +27,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#f4efe6" />
+    <meta name="theme-color" content="#0b1920" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -41,7 +40,7 @@ const {
   </head>
   <body class="min-h-screen">
     <Header />
-    <main class="max-w-5xl mx-auto w-full px-6 md:px-8">
+    <main class="max-w-6xl mx-auto w-full px-5 md:px-8">
       <slot />
     </main>
     <Footer />
@@ -53,7 +52,7 @@ const {
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver((entries) => {
           entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-        }, { threshold: 0.12 });
+        }, { threshold: 0.1 });
         els.forEach((el) => io.observe(el));
       } else {
         els.forEach((el) => el.classList.add('in'));

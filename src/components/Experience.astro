@@ -1,24 +1,31 @@
 ﻿---
 import { jobs } from '../data/cv';
+import Art from './Art.astro';
+const look = [
+  { color: 'bg-c-blue', art: 'nodes' },
+  { color: 'bg-c-red', art: 'phone' },
+  { color: 'bg-c-purple', art: 'grid' },
+  { color: 'bg-c-green', art: 'bars' },
+];
 ---
 
-<section id="experiencia" class="py-16 border-t border-line">
-  <h2 data-perch class="text-3xl md:text-4xl font-semibold mb-12 reveal">Dónde he trabajado</h2>
-  <div class="space-y-14">
-    {jobs.map((job) => (
-      <article class="grid md:grid-cols-[13rem_1fr] gap-4 md:gap-10 reveal">
-        <div>
-          <p class="note">{job.period}</p>
-          {job.current && <p class="mt-1 inline-block text-[11px] font-mono px-2 py-0.5 rounded bg-rust text-paper">ahora</p>}
+<section id="experiencia" class="py-14">
+  <h2 class="text-3xl md:text-5xl mb-3 reveal">Dónde he trabajado</h2>
+  <p class="text-cream/70 text-lg mb-10 max-w-2xl reveal">Cuatro etapas, de la más reciente a la primera.</p>
+  <div class="grid md:grid-cols-2 gap-5">
+    {jobs.map((job, i) => (
+      <article data-perch class="card reveal">
+        <div class:list={['card-art h-40', look[i % look.length].color]}>
+          <Art kind={look[i % look.length].art} />
+          {job.current && <span class="absolute top-3 right-3 font-mono text-[11px] uppercase px-2 py-1 rounded bg-cream text-night">Ahora</span>}
         </div>
-        <div>
-          <h3 data-perch class="text-2xl font-semibold">{job.company}</h3>
-          <p class="text-muted mb-4">{job.role}</p>
-          <ul class="space-y-2.5">
+        <div class="p-6 md:p-7 flex-1">
+          <p class="note mb-2">{job.period}</p>
+          <h3 class="text-2xl">{job.company}</h3>
+          <p class="text-cream/70 mb-5">{job.role}</p>
+          <ul class="space-y-3 text-[15.5px]">
             {job.highlights.map((h) => (
-              <li data-perch class="pl-4 relative before:content-['–'] before:absolute before:left-0 before:text-rust">
-                <strong class="font-semibold">{h.title}.</strong> <span class="text-muted">{h.text}</span>
-              </li>
+              <li><strong>{h.title}.</strong> <span class="text-cream/70">{h.text}</span></li>
             ))}
           </ul>
         </div>

@@ -1,72 +1,64 @@
 ﻿@import "tailwindcss";
 
 @theme {
-  --font-display: "Fraunces Variable", Georgia, serif;
-  --font-sans: "Instrument Sans", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: "IBM Plex Sans", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 
-  --color-paper: #f4efe6;
-  --color-paper-2: #ebe4d6;
-  --color-ink: #1d1b17;
-  --color-muted: #6a6356;
-  --color-line: #d8cfbd;
-  --color-rust: #c4501d;
-  --color-rust-dark: #a23f14;
+  --color-night: #0b1920;
+  --color-panel: #12252e;
+  --color-panel-2: #1a323d;
+  --color-cream: #f4f1d2;
+  --color-dim: #a9b3a6;
+
+  --color-c-green: #4d7a57;
+  --color-c-red: #d5503f;
+  --color-c-blue: #4c5f88;
+  --color-c-purple: #7d5296;
+  --color-c-mustard: #d39b2f;
+  --color-c-teal: #2b8a85;
+  --color-c-pink: #c4567a;
+  --color-c-orange: #d97435;
 }
 
 @layer base {
   html { scroll-behavior: smooth; }
   body {
-    @apply bg-paper text-ink font-sans antialiased;
+    @apply bg-night text-cream font-sans antialiased;
     font-size: 17px;
-    line-height: 1.6;
+    line-height: 1.55;
   }
-  ::selection { background: #f0c9a8; color: var(--color-ink); }
-  h1, h2, h3 { @apply font-display; font-variation-settings: "opsz" 96, "SOFT" 30; letter-spacing: -0.01em; }
-  a { text-underline-offset: 3px; }
-  :focus-visible { outline: 2px solid var(--color-rust); outline-offset: 3px; border-radius: 4px; }
+  ::selection { background: var(--color-cream); color: var(--color-night); }
+  h1, h2, h3 { font-weight: 700; letter-spacing: -0.015em; line-height: 1.12; }
+  :focus-visible { outline: 2px solid var(--color-cream); outline-offset: 3px; border-radius: 6px; }
 }
 
-section[id] { scroll-margin-top: 5rem; }
+section[id] { scroll-margin-top: 5.5rem; }
 
-/* Etiquetas pequenas en mono, como notas al margen */
-.note { @apply font-mono text-[12px] text-muted; }
+.note { @apply font-mono text-[12px] uppercase tracking-wider text-dim; }
 
-/* Bloques donde el gato puede subirse: bordes simples, sin brillos */
-.box {
-  background: #fbf8f1;
-  border: 1.5px solid var(--color-ink);
-  border-radius: 6px;
-  box-shadow: 4px 4px 0 var(--color-ink);
-  transition: transform .15s, box-shadow .15s;
+/* Tarjeta: panel de color arriba (ilustracion) y cuerpo oscuro abajo */
+.card {
+  @apply bg-panel rounded-xl overflow-hidden flex flex-col;
+  transition: transform .2s ease;
 }
-.box:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--color-ink); }
+.card:hover { transform: translateY(-4px); }
+.card-art { @apply relative overflow-hidden; }
+.card-art svg { display: block; width: 100%; height: 100%; }
+.card:hover .card-art svg { transform: scale(1.04); }
+.card-art svg { transition: transform .5s ease; }
 
-.btn {
-  @apply inline-flex items-center gap-2 px-5 py-3 font-semibold rounded-md border-[1.5px] border-ink transition;
-}
-.btn-solid { background: var(--color-ink); color: var(--color-paper); }
-.btn-solid:hover { background: var(--color-rust); border-color: var(--color-rust); }
-.btn-line { background: transparent; color: var(--color-ink); }
-.btn-line:hover { background: var(--color-ink); color: var(--color-paper); }
+.btn { @apply inline-flex items-center gap-2 px-5 py-3 font-bold rounded-lg border-2 border-cream transition-colors; }
+.btn-solid { background: var(--color-cream); color: var(--color-night); }
+.btn-solid:hover { background: transparent; color: var(--color-cream); }
+.btn-line { color: var(--color-cream); }
+.btn-line:hover { background: var(--color-cream); color: var(--color-night); }
 
-.tag {
-  @apply font-mono text-[11px] px-2 py-0.5 rounded border border-line text-muted;
-}
+.tag { @apply font-mono text-[11px] px-2 py-0.5 rounded bg-panel-2 text-cream/80; }
 
-/* Subrayado dibujado a mano bajo una palabra */
-.scribble {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 12' preserveAspectRatio='none'><path d='M2 8 C 30 2, 60 11, 95 6 S 160 3, 198 7' fill='none' stroke='%23c4501d' stroke-width='3' stroke-linecap='round'/></svg>");
-  background-repeat: no-repeat;
-  background-position: 0 100%;
-  background-size: 100% 0.42em;
-  padding-bottom: .12em;
-}
-
-/* Aparicion suave al hacer scroll */
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+  .card, .card-art svg { transition: none; }
   html { scroll-behavior: auto; }
 }

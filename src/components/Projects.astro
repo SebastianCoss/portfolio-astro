@@ -1,25 +1,32 @@
 ﻿---
-import { Image } from 'astro:assets';
-import erpTallerImg from '../assets/projects/erp-taller.png';
 import { projects } from '../data/cv';
+import Art from './Art.astro';
+const look = [
+  { color: 'bg-c-mustard', art: 'stairs' },
+  { color: 'bg-c-teal', art: 'dots' },
+  { color: 'bg-c-blue', art: 'triangle' },
+  { color: 'bg-c-pink', art: 'wave' },
+  { color: 'bg-c-orange', art: 'split' },
+  { color: 'bg-c-green', art: 'arcs' },
+];
 ---
 
-<section id="proyectos" class="py-16 border-t border-line">
-  <h2 data-perch class="text-3xl md:text-4xl font-semibold mb-3 reveal">Cosas que he construido</h2>
-  <p class="text-muted mb-12 max-w-2xl reveal">Algunas son de clientes, otras son mías. Las marco para que se note cuál es cuál.</p>
-  <div class="grid md:grid-cols-2 gap-8">
-    {projects.map((p) => (
-      <article data-perch class:list={['box p-6 flex flex-col reveal', p.featured && 'md:col-span-2']}>
-        {p.featured && (
-          <Image src={erpTallerImg} alt="Captura del ERP para taller automotriz" class="w-full max-h-64 object-cover object-top rounded border border-line mb-5" />
-        )}
-        <div class="flex items-baseline justify-between gap-4 mb-2">
-          <h3 class="text-xl font-semibold">{p.name}</h3>
-          <span class="note whitespace-nowrap">{p.status}</span>
+<section id="proyectos" class="py-14">
+  <h2 class="text-3xl md:text-5xl mb-3 reveal">Cosas que he construido</h2>
+  <p class="text-cream/70 text-lg mb-10 max-w-2xl reveal">Unas son de clientes y otras son mías. Cada tarjeta dice en qué etapa va.</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {projects.map((p, i) => (
+      <article data-perch class="card reveal">
+        <div class:list={['card-art h-44', look[i % look.length].color]}>
+          <Art kind={look[i % look.length].art} />
         </div>
-        <p class="text-muted mb-5 flex-1">{p.text}</p>
-        <div class="flex flex-wrap gap-1.5">
-          {p.tags.map((t) => <span class="tag">{t}</span>)}
+        <div class="p-6 flex-1 flex flex-col">
+          <p class="note mb-2">{p.status}</p>
+          <h3 class="text-xl mb-2">{p.name}</h3>
+          <p class="text-cream/70 text-[15.5px] mb-5 flex-1">{p.text}</p>
+          <div class="flex flex-wrap gap-1.5">
+            {p.tags.map((t) => <span class="tag">{t}</span>)}
+          </div>
         </div>
       </article>
     ))}

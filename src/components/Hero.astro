@@ -1,28 +1,35 @@
 ﻿---
-import { profile } from '../data/cv';
+import { profile, stats } from '../data/cv';
+const tiles = ['bg-c-red', 'bg-c-green', 'bg-c-blue', 'bg-c-purple'];
 ---
 
-<section id="top" class="pt-16 pb-20 md:pt-24 md:pb-28">
+<section id="top" class="pt-12 pb-16 md:pt-20 md:pb-24">
   <p class="note mb-6">Temixco, Morelos · México</p>
-  <h1 data-perch class="text-[2.6rem] md:text-7xl font-semibold leading-[1.02] max-w-4xl">
-    Hola, soy <span class="scribble">Cristóbal</span>.<br />
-    Hago el backend de sistemas que no se pueden caer.
+  <h1 data-perch class="text-[2.3rem] md:text-6xl max-w-4xl">
+    Soy Cristóbal. Hago el backend de sistemas que no se pueden caer.
   </h1>
-  <div class="mt-10 grid md:grid-cols-[1fr_auto] gap-10 items-end">
-    <div data-perch class="space-y-4 text-lg text-muted max-w-2xl">
-      <p>
-        Soy desarrollador .NET con más de cinco años de oficio. Lo que más disfruto es agarrar un sistema
-        viejo, de esos que nadie quiere tocar, y convertirlo en una API que da gusto mantener.
-      </p>
-      <p>
-        Hoy soy líder técnico en <strong class="text-ink font-semibold">Ryndem</strong>, donde llevo la arquitectura del proyecto R18.
-        Fuera de ahí, construyo mis propios productos y ayudé a levantar la comunidad de AWS en Morelos.
-      </p>
-    </div>
-    <div class="flex flex-wrap gap-3">
-      <a href="#proyectos" class="btn btn-solid">Ver proyectos</a>
-      <a href={profile.cvFile} download class="btn btn-line">Descargar CV</a>
-      <button type="button" data-open-chat class="btn btn-line">Pregúntale a mi CV</button>
-    </div>
+  <div class="mt-8 space-y-4 text-lg md:text-xl text-cream/75 max-w-3xl">
+    <p>
+      Desarrollador .NET con más de cinco años de oficio. Lo que más disfruto es agarrar un sistema viejo,
+      de esos que nadie quiere tocar, y convertirlo en una API que da gusto mantener.
+    </p>
+    <p>
+      Hoy soy líder técnico en <strong class="text-cream">Ryndem</strong>. Fuera de ahí construyo mis propios
+      productos y ayudé a levantar la comunidad de AWS en Morelos.
+    </p>
+  </div>
+  <div class="mt-9 flex flex-wrap gap-3">
+    <a href="#proyectos" class="btn btn-solid">Ver proyectos</a>
+    <a href={profile.cvFile} download class="btn btn-line">Descargar CV</a>
+    <button type="button" data-open-chat class="btn btn-line">Pregúntale a mi CV</button>
+  </div>
+
+  <div class="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4">
+    {stats.map((s, i) => (
+      <div data-perch class:list={['rounded-xl p-5 md:p-6 reveal', tiles[i]]}>
+        <p class="text-4xl md:text-5xl font-bold">{s.value}</p>
+        <p class="mt-2 text-[15px] leading-snug text-cream/90">{s.label}</p>
+      </div>
+    ))}
   </div>
 </section>
