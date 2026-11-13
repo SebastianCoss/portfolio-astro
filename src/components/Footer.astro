@@ -17,5 +17,8 @@ const ui = content[lang].ui;
       <a href={`mailto:${site.email}`} class="btn btn-line">{ui.emailBtn}</a>
     </div>
   </div>
-  <p class="mt-6 font-mono text-[12px] text-dim">© 2026 Cristóbal Sebastián García Coss · {ui.footerNote}</p>
+  <p class="mt-6 font-mono text-[12px] text-dim flex flex-wrap items-center gap-x-3 gap-y-2">
+    <span>© 2026 Cristóbal Sebastián García Coss · {ui.footerNote}</span>
+    <button type="button" data-open-term aria-label="Terminal" title="Terminal" class="px-2 py-1 rounded border border-panel-2 hover:border-cream hover:text-cream transition-colors">&gt;_</button>
+  </p>
 </footer>

@@ -9,6 +9,7 @@ import Footer from '../components/Footer.astro';
 import Cat from '../components/Cat.astro';
 import ChatWidget from '../components/ChatWidget.astro';
 import DotField from '../components/DotField.astro';
+import EasterEggs from '../components/EasterEggs.astro';
 import { content, type Lang } from '../data/cv';
 
 interface Props { lang: Lang; }
@@ -50,6 +51,7 @@ const c = content[lang];
     <Footer lang={lang} />
     <Cat />
     <ChatWidget lang={lang} />
+    <EasterEggs lang={lang} />
 
     <script>
       // modo dia / noche: lo cambia el boton del encabezado
