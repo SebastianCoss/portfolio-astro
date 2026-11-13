@@ -169,7 +169,7 @@
 
     // ---------- fisica ----------
     const W = canvas.width, FEET = (GH + 1) * S;      // distancia de la cima del sprite a las patas
-    const G = 0.55, SPEED = 3.2;
+    const G = 0.5, SPEED = 2.5;
     let enabled = true;
     try { enabled = localStorage.getItem('cat') !== 'off'; } catch { /* sin storage */ }
 
@@ -221,15 +221,15 @@
     const BR = 11;
     const throwBall = () => {
       if (!ball) { ball = document.createElement('div'); ball.className = 'cat-ball'; marks.appendChild(ball); }
-      bx = x + face * 30; by = y - 50; bvx = face * (6 + Math.random() * 4); bvy = -11;
+      bx = x + face * 30; by = y - 50; bvx = face * (4 + Math.random() * 3); bvy = -9;
       ballUntil = performance.now() + 11000;
     };
-    const kickBall = () => { bvx = face * (5 + Math.random() * 6); bvy = -(8 + Math.random() * 5); };
+    const kickBall = () => { bvx = face * (3.5 + Math.random() * 4); bvy = -(6.5 + Math.random() * 3.5); };
     const stepBall = (now: number) => {
       if (!ball) return;
       if (now > ballUntil) { ball.remove(); ball = null; say('…', 900); return; }
       const prev = by;
-      bvy += 0.5; bx += bvx; by += bvy; bvx *= 0.995;
+      bvy += 0.42; bx += bvx; by += bvy; bvx *= 0.992;
       if (bx < BR) { bx = BR; bvx = Math.abs(bvx) * 0.8; }
       if (bx > innerWidth - BR) { bx = innerWidth - BR; bvx = -Math.abs(bvx) * 0.8; }
       if (bvy > 0) {
@@ -261,16 +261,26 @@
     });
 
     // Salto balistico desde donde esta hasta (tx, ty); "extra" es cuanto sube por encima del punto mas alto.
-    const jumpTo = (tx: number, ty: number, extra = 48) => {
+    // "dest" es el bloque donde debe aterrizar (null = piso). Mientras va hacia el, atraviesa los demas:
+    // sin esto, al saltar hacia abajo volvia a caer sobre el mismo bloque del que salio.
+    let dest: Element | null | undefined;
+    const jumpTo = (tx: number, ty: number, extra = 48, target?: Element | null) => {
       const apexY = Math.min(y, ty) - extra;
       vy = -Math.sqrt(2 * G * (y - apexY));
       const tAir = -vy / G + Math.sqrt((2 * (ty - apexY)) / G);
-      vx = Math.max(-13, Math.min(13, (tx - x) / tAir));
-      grounded = false; ground = null; jumpCool = 24;
+      vx = Math.max(-11, Math.min(11, (tx - x) / tAir));
+      grounded = false; ground = null; dest = target;
       if (Math.abs(vx) > 0.2) face = vx > 0 ? 1 : -1;
     };
 
-    const tick = () => {
+    // Ritmo del gato: cuanto espera antes de volver a saltar y cuanto debe quedarse quieto el cursor.
+    const REST = 75;          // cuadros de descanso tras aterrizar (~1.2 s)
+    const DWELL = 450;        // ms que el cursor debe llevar sobre otro nivel antes de saltar hacia el
+    let wantEl: Element | null | undefined, wantSince = 0, leapCool = 0, walking = false;
+
+    // Un paso de simulacion. Se ejecuta a 60 pasos por segundo fijos (ver tick), sin importar
+    // si la pantalla es de 60, 120 o 144 Hz: antes el gato iba al doble de velocidad en pantallas rapidas.
+    const step = () => {
       const now = performance.now();
       stepBall(now);
       const playing = !!ball;
@@ -281,10 +291,11 @@
 
       if (grounded) {
         const here = rectOf(ground);
-        if (!here) { grounded = false; ground = null; vx = 0; vy = 0; }
+        if (!here) { grounded = false; ground = null; dest = undefined; vx = 0; vy = 0; }
         else {
           y = here.t;
           if (jumpCool > 0) jumpCool--;
+          if (leapCool > 0) leapCool--;
           const active = idle < 5000;
           // superficie que el cursor tiene debajo (bloque o piso): ahi quiere estar el gato
           const under = platforms()
@@ -293,38 +304,46 @@
           let tx = playing ? cx : cx + (x < cx ? -96 : 96);                     // al lado del cursor, sin taparlo
           let jumped = false;
 
+          // el cursor debe quedarse un momento sobre el otro nivel; pasar de largo no dispara saltos
+          const other = under && under.el !== ground ? under : null;
+          if (!other) wantEl = undefined;
+          else if (wantEl !== other.el) { wantEl = other.el; wantSince = now; }
+          const settled = !!other && now - wantSince > (playing ? 150 : DWELL);
+
           const purring = now < purrUntil;
           if (purring) { jumped = true; mode = 'sit'; if (frame % 22 === 0) heartAt(x, y - 74); }
-          if (!purring && active && jumpCool === 0 && under && under.el !== ground) {
+          if (!purring && active && jumpCool === 0 && other && settled) {
             // otro nivel (arriba o abajo): saltar hacia alla
-            const lx = Math.min(Math.max(cx, under.l + 34), under.r - 34);
-            const rise = y - under.t;
-            if (rise < 400 && Math.abs(lx - x) < 560) { jumpTo(lx, under.t, rise > 0 ? 46 : 72); jumped = true; }
-            else tx = lx;                                        // muy lejos: acercarse primero
+            const lx = Math.min(Math.max(cx, other.l + 34), other.r - 34);
+            const rise = y - other.t;
+            if (rise < 400 && Math.abs(lx - x) < 520) { jumpTo(lx, other.t, rise > 0 ? 44 : 30, other.el); jumped = true; }
+            else tx = lx;                                        // muy lejos: acercarse primero caminando
           }
-          if (!jumped && active && jumpCool === 0 && cy < y - 110 && Math.abs(cx - x) < 170) {
-            // cursor arriba y sin bloque donde subirse: brinco para alcanzarlo
-            jumpTo(x + (cx - x) * 0.6, y, Math.min(y - cy - 16, 250)); jumped = true;
+          if (!jumped && !playing && active && jumpCool === 0 && leapCool === 0 && idle > 500 && cy < y - 110 && Math.abs(cx - x) < 150) {
+            // cursor quieto arriba y sin bloque donde subirse: de vez en cuando brinca para alcanzarlo
+            jumpTo(x + (cx - x) * 0.5, y, Math.min(y - cy - 16, 220)); jumped = true; leapCool = 260;
           }
 
           if (!jumped) {
             if (dist < (playing ? 70 : 118) && idle < 3000) {
-              mode = 'swat'; face = cx >= x ? 1 : -1;
-              if (now - swatAt > 700) {
+              mode = 'swat'; walking = false; face = cx >= x ? 1 : -1;
+              if (now - swatAt > (playing ? 700 : 950)) {
                 swatAt = now; if (playing) kickBall(); else scratchAt(cx, cy);
-                if (Math.random() < 0.3) say(['¡mrrau!', 'zas', '¡mío!'][Math.floor(Math.random() * 3)], 900);
+                if (Math.random() < 0.25) say(['¡mrrau!', 'zas', '¡mío!'][Math.floor(Math.random() * 3)], 900);
               }
             } else if (idle > 9000) {
-              mode = 'sleep';
+              mode = 'sleep'; walking = false;
               if (frame % 240 === 0) say('z z z', 2200);
             } else {
               const d = tx - x;
-              if (active && jumpCool === 0 && Math.abs(d) > 230) {
-                jumpTo(x + Math.sign(d) * Math.min(Math.abs(d), 270), y, 36);   // brinco largo al perseguir
-              } else if (Math.abs(d) > 12) {
-                const sp = curSpeed > 1.4 ? SPEED * 1.8 : SPEED;
-                x += Math.sign(d) * Math.min(Math.abs(d) * 0.09 + 0.5, sp); face = d > 0 ? 1 : -1; mode = 'walk';
-                x = Math.min(Math.max(x, here.l + 26), here.r - 26);
+              // empieza a caminar solo si el objetivo se alejo de verdad, y se detiene al llegar
+              if (!walking && Math.abs(d) > (playing ? 20 : 70)) walking = true;
+              if (walking && Math.abs(d) <= 10) walking = false;
+              if (walking) {
+                const sp = playing ? SPEED * 1.5 : Math.abs(d) > 320 ? SPEED * 1.4 : SPEED;
+                x += Math.sign(d) * Math.min(Math.abs(d) * 0.07 + 0.4, sp); face = d > 0 ? 1 : -1; mode = 'walk';
+                const cl = Math.min(Math.max(x, here.l + 26), here.r - 26);
+                if (cl !== x) { x = cl; walking = false; mode = 'sit'; }      // llego al borde del bloque: espera ahi
               } else { mode = 'sit'; face = cx >= x ? 1 : -1; }
             }
           }
@@ -332,15 +351,16 @@
       }
 
       if (!grounded) {
-        mode = 'air';
+        mode = 'air'; walking = false;
         const prevY = y;
         vy += G; x += vx; y += vy;
         if (vy > 0) {
           const hit = platforms()
-            .filter((p) => x > p.l + 6 && x < p.r - 6 && prevY <= p.t + 4 && y >= p.t)
+            .filter((p) => (dest === undefined || p.el === dest || p.el === null) && x > p.l + 6 && x < p.r - 6 && prevY <= p.t + 4 && y >= p.t)
             .sort((a, b) => a.t - b.t)[0];
           if (hit) {
-            y = hit.t; ground = hit.el; grounded = true; vx = 0; vy = 0; mode = 'sit';
+            y = hit.t; ground = hit.el; grounded = true; dest = undefined; vx = 0; vy = 0; mode = 'sit';
+            jumpCool = playing ? 30 : REST;
             cat.classList.add('land'); setTimeout(() => cat.classList.remove('land'), 220);
           }
         }
@@ -348,6 +368,17 @@
       } else tilt = 0;
 
       x = Math.min(Math.max(x, W / 2), innerWidth - W / 2);
+    };
+
+    let lastTs = 0, acc = 0;
+    const STEP_MS = 1000 / 60;
+    const tick = (ts: number) => {
+      // pasos fijos de 60 Hz; si la pestana estuvo en pausa no intenta "ponerse al dia" de golpe
+      acc += Math.min(ts - (lastTs || ts), 100); lastTs = ts;
+      let n = 0;
+      while (acc >= STEP_MS && n < 4) { step(); acc -= STEP_MS; n++; }
+      if (n === 4) acc = 0;
+      const now = performance.now();
 
       // cuadro segun el modo
       let name = 'sit';
